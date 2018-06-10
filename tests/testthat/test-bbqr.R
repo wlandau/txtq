@@ -1,6 +1,6 @@
 context("bbqr")
 
-test_that("bbqr works", {
+test_that("bbqr utilities work", {
   q <- bbqr(tempfile())
   expect_true(file.exists(q$path))
   expect_true(file.exists(q$db))
@@ -63,4 +63,26 @@ test_that("bbqr works", {
   expect_true(file.exists(q$path))
   q$destroy()
   expect_false(file.exists(q$path))
+})
+
+test_that("bbqr is thread safe", {
+  f <- function(process, path){
+    q <- bbqr::bbqr(path)
+    if (identical(process, "A")){
+      while (nrow(q$log()) < 1000 || !q$empty()){
+        q$pop()
+      }
+    } else {
+      for (i in seq_len(1000)){
+        q$push(title = i, message = i + 1)
+      }
+    }
+  }
+  cl <- parallel::makePSOCKcluster(2)
+  path <- tempfile()
+  parallel::parLapply(cl = cl, X = c("A", "B"), fun = f, path = path)
+  parallel::stopCluster(cl)
+  q <- bbqr(path)
+  expect_equal(nrow(q$list()), 0)
+  expect_equal(nrow(q$log()), 1000)
 })

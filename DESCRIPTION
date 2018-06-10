@@ -24,8 +24,9 @@ Imports:
   fs,
   R6
 Suggests: 
-    knitr,
-    testthat
+  knitr,
+  parallel,
+  testthat
 VignetteBuilder: knitr
 Encoding: UTF-8
 RoxygenNote: 6.0.1

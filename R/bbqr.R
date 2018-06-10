@@ -34,6 +34,7 @@
 #'   # But you still have a log of all the messages that were ever pushed.
 #'   q$log()
 #'   # q$pop() with no arguments just pops one message.
+#'   # Call pop(-1) to pop all the messages at once.
 #'   q$pop()
 #'   # There are more instructions.
 #'   q$pop()
@@ -108,7 +109,8 @@ R6_message_queue <- R6::R6Class(
           sep = "|",
           stringsAsFactors = FALSE,
           header = FALSE,
-          quote = ""
+          quote = "",
+          na.strings = NULL
         )
       )
     },
@@ -130,7 +132,8 @@ R6_message_queue <- R6::R6Class(
           nrows = n,
           stringsAsFactors = FALSE,
           header = FALSE,
-          quote = ""
+          quote = "",
+          na.strings = NULL
         )
       )
     },

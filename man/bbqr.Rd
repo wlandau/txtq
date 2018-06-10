@@ -44,6 +44,7 @@ and the examples in this help file for instructions.
   # But you still have a log of all the messages that were ever pushed.
   q$log()
   # q$pop() with no arguments just pops one message.
+  # Call pop(-1) to pop all the messages at once.
   q$pop()
   # There are more instructions.
   q$pop()
