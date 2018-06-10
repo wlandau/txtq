@@ -19,22 +19,21 @@ and the examples in this help file for instructions.
 }
 \examples{
   path <- tempfile() # Define a path to your queue.
+  path # This path is just a temporary file for demo purposes.
   q <- bbqr(path) # Create the queue.
   list.files(q$path) # The queue lives in this folder.
   q$list() # You have not pushed any messages yet.
   # Let's say two parallel processes (A and B) are sharing this queue.
-  # Process A sends process B some messages.
+  # Process A sends Process B some messages.
   # You can only send character strings.
-  q$push(title = "hello", message = "world")
-  q$push(title = "guess", message = "what")
-  q$push(title = "you", message = "have")
-  q$push(title = "a", message = "queue")
+  q$push(title = "Hello", message = "process B.")
+  q$push(title = "Calculate", message = "sqrt(4)")
+  q$push(title = "Calculate", message = "sqrt(16)")
+  q$push(title = "Send back", message = "the sum.")
   # See your queued messages.
   q$list()
   q$count()
   q$empty()
-  # When Process A accessed the queue, the queue was locked
-  # so Process B could not mess up the data.
   # Now, let's assume process B comes online. It can consume
   # some messages, locking the queue so process A does not
   # mess up the data.
@@ -46,6 +45,16 @@ and the examples in this help file for instructions.
   q$log()
   # q$pop() with no arguments just pops one message.
   q$pop()
+  # There are more instructions.
+  q$pop()
+  # Let's say Process B follows the instructions and sends
+  # the results back to Process A.
+  q$push(title = "Results", message = as.character(sqrt(4) + sqrt(16)))
+  # Process A now has access to the results.
+  q$pop()
   # Destroy the queue's files.
   q$destroy()
+  # This whole time, the queue was locked when either Process A
+  # or Process B accessed it. That way, the data stays correct
+  # no matter who is accessing/modifying the queue and when.
 }
