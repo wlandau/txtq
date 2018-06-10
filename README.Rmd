@@ -49,7 +49,7 @@ q$push(title = "Calculate", message = "sqrt(16)")
 q$push(title = "Send back", message = "the sum.")
 ```
 
-You cna inspect the contents of the queue from either process.
+You can inspect the contents of the queue from either process.
 
 ```{r list}
 q$list()
