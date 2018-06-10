@@ -1,0 +1,32 @@
+Package: bbqr
+Title: A Bare-Bones Message Queue for R
+Description: A minimalist message queue in R interprocess communication.
+Version: 0.0.1
+License: MIT + file LICENSE
+URL: https://github.com/wlandau/bbqr
+BugReports: https://github.com/wlandau/bbqr/issues
+Authors@R: c(
+  person(
+    family = "Landau",
+    given = c("William", "Michael"),
+    email = "will.landau@gmail.com",
+    role = c("aut", "cre")
+  ),
+  person(
+    family = "Eli Lilly and Company",
+    role = "cph"
+  ))
+Depends:
+  R (>= 3.2.0)
+Imports:
+  base64url,
+  filelock,
+  fs,
+  R6
+Suggests: 
+    knitr,
+    testthat
+VignetteBuilder: knitr
+Encoding: UTF-8
+RoxygenNote: 6.0.1
+Roxygen: list(markdown = TRUE)
