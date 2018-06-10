@@ -136,8 +136,8 @@ R6_message_queue <- R6::R6Class(
     },
     parse_db = function(x){
       colnames(x) <- c("title", "message")
-      x$title <- base64url::base64_urldecode(x$title)
-      x$message <- base64url::base64_urldecode(x$message)
+      x$title <- base64url::base64_urldecode(as.character(x$title))
+      x$message <- base64url::base64_urldecode(as.character(x$message))
       x
     }
   ),
