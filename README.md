@@ -5,12 +5,12 @@
 txtq - a small message queue for R
 ==================================
 
-The `txtq` package is a way for parallel processes in R to send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
+The `txtq` package helps parallel R processes send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
 
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmplFjRCQ/file3333d5a9ac8"
+#> [1] "/tmp/Rtmpkx5Jqy/file79266fb69281"
 q <- txtq(path) # Create the queue.
 ```
 
@@ -120,7 +120,7 @@ Similar work
 liteq
 -----
 
-[Gábor Csárdi](https://github.com/gaborcsardi)'s [`liteq`](https://github.com/r-lib/liteq) package offers essentially the same functionality implemented with SQLite. It has a some additional features, such as the ability to detect crashed workers and requeue failed messages, but it was in an early stage of development at the time `txtq` was released.
+[Gábor Csárdi](https://github.com/gaborcsardi)'s [`liteq`](https://github.com/r-lib/liteq) package offers essentially the same functionality implemented with SQLite. It has a some additional features, such as the ability to detect crashed workers and re-queue failed messages, but it was in an early stage of development at the time `txtq` was released.
 
 Other message queues
 --------------------
