@@ -12,8 +12,7 @@ The \code{bbqr()} function creates a folder at this path to store
 the messages.}
 }
 \description{
-The queue lives in the folder you give
-in the path. See the README at
+See the README at
 \url{https://github.com/wlandau/bbqr}
 and the examples in this help file for instructions.
 }

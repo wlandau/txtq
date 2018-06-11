@@ -1,6 +1,5 @@
 #' @title Create a bare-bones message queue in R.
-#' @description The queue lives in the folder you give
-#'   in the path. See the README at
+#' @description See the README at
 #'   [https://github.com/wlandau/bbqr](https://github.com/wlandau/bbqr)
 #'   and the examples in this help file for instructions.
 #' @export
