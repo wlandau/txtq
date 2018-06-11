@@ -1,4 +1,4 @@
-#' The txtq package is a bare-bones message queue in R
+#' The txtq package is a small message queue for R.
 #' @docType package
 #' @name txtq-package
 #' @author William Michael Landau \email{will.landau@@gmail.com}

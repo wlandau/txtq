@@ -1,4 +1,4 @@
-#' @title Create a bare-bones message queue in R.
+#' @title Create a message queue.
 #' @description See the README at
 #'   [https://github.com/wlandau/txtq](https://github.com/wlandau/txtq)
 #'   and the examples in this help file for instructions.

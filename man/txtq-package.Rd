@@ -3,9 +3,9 @@
 \docType{package}
 \name{txtq-package}
 \alias{txtq-package}
-\title{The txtq package is a bare-bones message queue in R}
+\title{The txtq package is a small message queue for R.}
 \description{
-The txtq package is a bare-bones message queue in R
+The txtq package is a small message queue for R.
 }
 \examples{
 # See ?txtq for examples.

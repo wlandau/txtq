@@ -2,7 +2,7 @@
 % Please edit documentation in R/txtq.R
 \name{txtq}
 \alias{txtq}
-\title{Create a bare-bones message queue in R.}
+\title{Create a message queue.}
 \usage{
 txtq(path)
 }
