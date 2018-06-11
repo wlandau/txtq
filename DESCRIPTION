@@ -22,6 +22,7 @@ Imports:
   base64url,
   filelock,
   fs,
+  R.utils,
   R6
 Suggests: 
   knitr,
