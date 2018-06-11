@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN](http://www.r-pkg.org/badges/version/bbqr)](http://cran.r-project.org/package=bbqr)
+[![CRAN](https://www.r-pkg.org/badges/version/bbqr)](https://cran.r-project.org/package=bbqr)
 [![Travis build
 status](https://travis-ci.org/wlandau/bbqr.svg?branch=master)](https://travis-ci.org/wlandau/bbqr)
 [![AppVeyor build
@@ -17,7 +17,7 @@ parallel task together. First, both processes grab the queue.
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpyQhQLC/file562064c80018"
+#> [1] "/tmp/Rtmpbo4cCW/file111721549852"
 q <- bbqr(path) # Create the queue.
 ```
 

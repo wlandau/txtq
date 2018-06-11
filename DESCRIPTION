@@ -1,6 +1,7 @@
 Package: bbqr
 Title: A Bare-Bones Message Queue for R
-Description: A minimalist message queue in R interprocess communication.
+Description: A minimalist message queue for communication
+  among parallel R processes.
 Version: 0.0.1
 License: MIT + file LICENSE
 URL: https://github.com/wlandau/bbqr
@@ -23,10 +24,8 @@ Imports:
   R.utils,
   R6
 Suggests: 
-  knitr,
   parallel,
   testthat
-VignetteBuilder: knitr
 Encoding: UTF-8
 RoxygenNote: 6.0.1
 Roxygen: list(markdown = TRUE)
