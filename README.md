@@ -17,7 +17,7 @@ parallel task together. First, both processes grab the queue.
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpnxJghP/file1b452f08b87"
+#> [1] "/tmp/RtmpYSkB9N/file2edb21d1fbd1"
 q <- bbqr(path) # Create the queue.
 ```
 
@@ -134,9 +134,9 @@ when multiple processes try to read or change the data at the same time.
 [`liteq`](https://github.com/r-lib/liteq) package offers essentially the
 same functionality implemented with SQLite databases. It has a few
 additional features (for example, the ability to detect crashed workers
-and requeue failed messages). However, at the time `bbqr` was
-implemented, `liteq` was [still in an early stage of
-development](https://github.com/r-lib/liteq/issues/17).
+and requeue failed messages). However, at the time `bbqr` was first
+released, `liteq` was in an early stage of development (example:
+[r-lib/liteq\#17](https://github.com/r-lib/liteq/issues/17)).
 
 ## Other message queues
 
@@ -146,12 +146,17 @@ most notably [ZeroMQ](http://zeromq.org) and
 Ooms](http://github.com/jeroen) and [Whit
 Armstrong](https://github.com/armstrtw) maintain
 [`rzmq`](https://github.com/ropensci/rzmq), a package to work with
-[ZeroMQ](http://zeromq.org) from R. These tools may be ideal for
-intermediate advanced users, but `bbqr` has two main advantages for
-simple use cases.
+[ZeroMQ](http://zeromq.org) from R. Even in this landscape, `bbq` has
+advantages.
 
-1.  It does not require you to install anything outside R.
-2.  Tools based on IP/TCP sockets may only be able to send one message
-    at a time, but `bbqr` can send multiple messages before any are
-    consumed. Some applications may need to allow for a backlog of
-    unread messages.
+1.  Its user interface is incredibly friendly, and its internals are
+    simple. No prior knowledge of sockets or message-passing is
+    required.
+2.  It is incredibly lightweight, R-focused, and easy to install. It
+    only depends on R and a few packages on
+    [CRAN](https://cran.r-project.org).
+3.  Unlike socket-based technologies, `bbqr` it is file-based.
+      - The queue persists even if your work crashes, so you can
+        diagnose failures with `q$log()` and `q$list()`.
+      - Job monitoring is easy. Just open another R session and call
+        `q$list()` while your work is running.
