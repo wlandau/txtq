@@ -4,7 +4,8 @@
 [![CRAN](http://www.r-pkg.org/badges/version/bbqr)](http://cran.r-project.org/package=bbqr)
 [![Travis build
 status](https://travis-ci.org/wlandau/bbqr.svg?branch=master)](https://travis-ci.org/wlandau/bbqr)
-[![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/bbqr?branch=master&svg=true)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/wlandau/bbqr?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/bbqr)
 [![Codecov](https://codecov.io/github/wlandau/bbqr/coverage.svg?branch=master)](https://codecov.io/github/wlandau/bbqr?branch=master)
 
 # A bare-bones message queue for R
@@ -16,7 +17,7 @@ parallel task together. First, both processes grab the queue.
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpLmOGrW/file78922ae9a6ad"
+#> [1] "/tmp/RtmpnxJghP/file1b452f08b87"
 q <- bbqr(path) # Create the queue.
 ```
 
