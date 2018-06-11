@@ -1,16 +1,16 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-[![CRAN](https://www.r-pkg.org/badges/version/bbqr)](https://cran.r-project.org/package=bbqr)
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq)
 [![Travis build
-status](https://travis-ci.org/wlandau/bbqr.svg?branch=master)](https://travis-ci.org/wlandau/bbqr)
+status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq)
 [![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/wlandau/bbqr?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/bbqr)
-[![Codecov](https://codecov.io/github/wlandau/bbqr/coverage.svg?branch=master)](https://codecov.io/github/wlandau/bbqr?branch=master)
+status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq)
+[![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
 # A bare-bones message queue for R
 
-The `bbqr` package is a way for parallel processes in R to send messages
+The `txtq` package is a way for parallel processes in R to send messages
 to each other. Let’s say Process A and Process B are working on a
 parallel task together. First, both processes grab the queue.
 
@@ -18,7 +18,7 @@ parallel task together. First, both processes grab the queue.
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
 #> [1] "/tmp/Rtmpbo4cCW/file111721549852"
-q <- bbqr(path) # Create the queue.
+q <- txtq(path) # Create the queue.
 ```
 
 The queue uses flat text files in the folder you specified.
@@ -135,7 +135,7 @@ when multiple processes try to read or change the data at the same time.
 same functionality implemented with SQLite. It has a some additional
 features, such as the ability to detect crashed workers and requeue
 failed messages, but it was in an early stage of development at the time
-`bbqr` was released.
+`txtq` was released.
 
 ## Other message queues
 
@@ -145,7 +145,7 @@ most notably [ZeroMQ](http://zeromq.org) and
 Ooms](http://github.com/jeroen) and [Whit
 Armstrong](https://github.com/armstrtw) maintain
 [`rzmq`](https://github.com/ropensci/rzmq), a package to work with
-[ZeroMQ](http://zeromq.org) from R. Even in this landscape, `bbq` has
+[ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has
 advantages.
 
 1.  Its user interface is incredibly friendly, and its internals are
@@ -154,7 +154,7 @@ advantages.
 2.  It is incredibly lightweight, R-focused, and easy to install. It
     only depends on R and a few packages on
     [CRAN](https://cran.r-project.org).
-3.  Unlike socket-based technologies, `bbqr` it is file-based.
+3.  Unlike socket-based technologies, `txtq` it is file-based.
       - The queue persists even if your work crashes, so you can
         diagnose failures with `q$log()` and `q$list()`.
       - Job monitoring is easy. Just open another R session and call

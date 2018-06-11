@@ -1,7 +1,7 @@
-context("bbqr")
+context("txtq")
 
-test_that("bbqr utilities work", {
-  q <- bbqr(tempfile())
+test_that("txtq utilities work", {
+  q <- txtq(tempfile())
   expect_true(file.exists(q$path))
   expect_true(file.exists(q$db))
   expect_true(file.exists(q$head))
@@ -65,9 +65,9 @@ test_that("bbqr utilities work", {
   expect_false(file.exists(q$path))
 })
 
-test_that("bbqr is thread safe", {
+test_that("txtq is thread safe", {
   f <- function(process, path){
-    q <- bbqr::bbqr(path)
+    q <- txtq::txtq(path)
     if (identical(process, "A")){
       while (nrow(q$log()) < 1000 || !q$empty()){
         q$pop()
@@ -82,7 +82,7 @@ test_that("bbqr is thread safe", {
   path <- tempfile()
   parallel::parLapply(cl = cl, X = c("A", "B"), fun = f, path = path)
   parallel::stopCluster(cl)
-  q <- bbqr(path)
+  q <- txtq(path)
   expect_equal(nrow(q$list()), 0)
   expect_equal(nrow(q$log()), 1000)
 })

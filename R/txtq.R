@@ -1,15 +1,15 @@
 #' @title Create a bare-bones message queue in R.
 #' @description See the README at
-#'   [https://github.com/wlandau/bbqr](https://github.com/wlandau/bbqr)
+#'   [https://github.com/wlandau/txtq](https://github.com/wlandau/txtq)
 #'   and the examples in this help file for instructions.
 #' @export
 #' @param path Character string giving the file path of the queue.
-#'   The `bbqr()` function creates a folder at this path to store
+#'   The `txtq()` function creates a folder at this path to store
 #'   the messages.
 #' @examples
 #'   path <- tempfile() # Define a path to your queue.
 #'   path # This path is just a temporary file for demo purposes.
-#'   q <- bbqr(path) # Create the queue.
+#'   q <- txtq(path) # Create the queue.
 #'   list.files(q$path) # The queue lives in this folder.
 #'   q$list() # You have not pushed any messages yet.
 #'   # Let's say two parallel processes (A and B) are sharing this queue.
@@ -47,36 +47,36 @@
 #'   # This whole time, the queue was locked when either Process A
 #'   # or Process B accessed it. That way, the data stays correct
 #'   # no matter who is accessing/modifying the queue and when.
-bbqr <- function(path){
+txtq <- function(path){
   R6_message_queue$new(path = path)
 }
 
 R6_message_queue <- R6::R6Class(
   classname = "R6_message_queue",
   private = list(
-    bbqr_exclusive = function(code){
+    txtq_exclusive = function(code){
       on.exit(filelock::unlock(x))
       x <- filelock::lock(self$lock)
       force(code)
     },
-    bbqr_get_head = function(){
+    txtq_get_head = function(){
       scan(self$head, quiet = TRUE, what = integer())
     },
-    bbqr_set_head = function(n){
+    txtq_set_head = function(n){
       write(x = as.integer(n), file = self$head, append = FALSE)
     },
-    bbqr_count = function(){
+    txtq_count = function(){
       as.integer(
-        R.utils::countLines(self$db) - private$bbqr_get_head() + 1
+        R.utils::countLines(self$db) - private$txtq_get_head() + 1
       )
     },
-    bbqr_pop = function(n){
-      out <- private$bbqr_list(n = n)
-      new_head <- private$bbqr_get_head() + nrow(out)
-      private$bbqr_set_head(new_head)
+    txtq_pop = function(n){
+      out <- private$txtq_list(n = n)
+      new_head <- private$txtq_get_head() + nrow(out)
+      private$txtq_set_head(new_head)
       out
     },
-    bbqr_push = function(title, message){
+    txtq_push = function(title, message){
       out <- data.frame(
         title = base64url::base64_urlencode(as.character(title)),
         message = base64url::base64_urlencode(as.character(message)),
@@ -92,7 +92,7 @@ R6_message_queue <- R6::R6Class(
         quote = FALSE
       )
     },
-    bbqr_log = function(){
+    txtq_log = function(){
       if (length(scan(self$db, quiet = TRUE, what = character())) < 1){
         return(
           data.frame(
@@ -113,8 +113,8 @@ R6_message_queue <- R6::R6Class(
         )
       )
     },
-    bbqr_list = function(n){
-      if (private$bbqr_count() < 1){
+    txtq_list = function(n){
+      if (private$txtq_count() < 1){
         return(
           data.frame(
             title = character(0),
@@ -127,7 +127,7 @@ R6_message_queue <- R6::R6Class(
         read.table(
           self$db,
           sep = "|",
-          skip = private$bbqr_get_head() - 1,
+          skip = private$txtq_get_head() - 1,
           nrows = n,
           stringsAsFactors = FALSE,
           header = FALSE,
@@ -153,32 +153,32 @@ R6_message_queue <- R6::R6Class(
       self$db <- file.path(self$path, "db")
       self$head <- file.path(self$path, "head")
       self$lock <- file.path(self$path, "lock")
-      private$bbqr_exclusive({
+      private$txtq_exclusive({
         fs::file_create(self$db)
         fs::file_create(self$head)
-        if (length(private$bbqr_get_head()) < 1){
-          private$bbqr_set_head(1)
+        if (length(private$txtq_get_head()) < 1){
+          private$txtq_set_head(1)
         }
       })
     },
     count = function(){
-      private$bbqr_exclusive(private$bbqr_count())
+      private$txtq_exclusive(private$txtq_count())
     },
     empty = function(){
       self$count() < 1
     },
     log = function(){
-      private$bbqr_exclusive(private$bbqr_log())
+      private$txtq_exclusive(private$txtq_log())
     },
     list = function(n = -1){
-      private$bbqr_exclusive(private$bbqr_list(n = n))
+      private$txtq_exclusive(private$txtq_list(n = n))
     },
     pop = function(n = 1){
-      private$bbqr_exclusive(private$bbqr_pop(n = n))
+      private$txtq_exclusive(private$txtq_pop(n = n))
     },
     push = function(title, message){
-      private$bbqr_exclusive(
-        private$bbqr_push(title = title, message = message))
+      private$txtq_exclusive(
+        private$txtq_push(title = title, message = message))
     },
     destroy = function(){
       unlink(self$path, recursive = TRUE, force = TRUE)

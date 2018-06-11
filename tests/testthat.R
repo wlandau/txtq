@@ -1,4 +1,4 @@
 library(testthat)
-library(bbqr)
+library(txtq)
 
-test_check("bbqr")
+test_check("txtq")

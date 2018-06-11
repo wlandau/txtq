@@ -16,19 +16,19 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 ```
 
 ```{r mainexample, echo = FALSE}
-suppressMessages(suppressWarnings(library(bbqr)))
+suppressMessages(suppressWarnings(library(txtq)))
 ```
 
-[![CRAN](https://www.r-pkg.org/badges/version/bbqr)](https://cran.r-project.org/package=bbqr) [![Travis build status](https://travis-ci.org/wlandau/bbqr.svg?branch=master)](https://travis-ci.org/wlandau/bbqr) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/bbqr?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/bbqr) [![Codecov](https://codecov.io/github/wlandau/bbqr/coverage.svg?branch=master)](https://codecov.io/github/wlandau/bbqr?branch=master)
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
 # A bare-bones message queue for R
 
-The `bbqr` package is a way for parallel processes in R to send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
+The `txtq` package is a way for parallel processes in R to send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
 
 ```{r setup}
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-q <- bbqr(path) # Create the queue.
+q <- txtq(path) # Create the queue.
 ```
 
 The queue uses flat text files in the folder you specified.
@@ -105,14 +105,14 @@ This entire time, the queue was locked when either process was trying to create,
 
 ## liteq
 
-[Gábor Csárdi](https://github.com/gaborcsardi)'s [`liteq`](https://github.com/r-lib/liteq) package offers essentially the same functionality implemented with SQLite. It has a some additional features, such as the ability to detect crashed workers and requeue failed messages, but it was in an early stage of development at the time `bbqr` was released.
+[Gábor Csárdi](https://github.com/gaborcsardi)'s [`liteq`](https://github.com/r-lib/liteq) package offers essentially the same functionality implemented with SQLite. It has a some additional features, such as the ability to detect crashed workers and requeue failed messages, but it was in an early stage of development at the time `txtq` was released.
 
 ## Other message queues
 
-There is a [plethora of message queues](http://queues.io/) beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `bbq` has advantages.
+There is a [plethora of message queues](http://queues.io/) beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has advantages.
 
 1. Its user interface is incredibly friendly, and its internals are simple. No prior knowledge of sockets or message-passing is required.
 2. It is incredibly lightweight, R-focused, and easy to install. It only depends on R and a few packages on [CRAN](https://cran.r-project.org).
-3. Unlike socket-based technologies, `bbqr` it is file-based.
+3. Unlike socket-based technologies, `txtq` it is file-based.
     - The queue persists even if your work crashes, so you can diagnose failures with `q$log()` and `q$list()`.
     - Job monitoring is easy. Just open another R session and call `q$list()` while your work is running.
