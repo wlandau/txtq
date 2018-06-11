@@ -17,7 +17,7 @@ parallel task together. First, both processes grab the queue.
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpYSkB9N/file2edb21d1fbd1"
+#> [1] "/tmp/RtmpyQhQLC/file562064c80018"
 q <- bbqr(path) # Create the queue.
 ```
 
@@ -132,11 +132,10 @@ when multiple processes try to read or change the data at the same time.
 
 [Gábor Csárdi](https://github.com/gaborcsardi)’s
 [`liteq`](https://github.com/r-lib/liteq) package offers essentially the
-same functionality implemented with SQLite databases. It has a few
-additional features (for example, the ability to detect crashed workers
-and requeue failed messages). However, at the time `bbqr` was first
-released, `liteq` was in an early stage of development (example:
-[r-lib/liteq\#17](https://github.com/r-lib/liteq/issues/17)).
+same functionality implemented with SQLite. It has a some additional
+features, such as the ability to detect crashed workers and requeue
+failed messages, but it was in an early stage of development at the time
+`bbqr` was released.
 
 ## Other message queues
 
