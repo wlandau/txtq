@@ -34,7 +34,7 @@ q <- txtq(path) # Create the queue.
 The queue uses text files to keep track of your data.
 
 ```{r files}
-list.files(q$path()) # The text files in the queue live in this folder.
+list.files(q$path()) # The queue's underlying text files live in this folder.
 q$list() # You have not pushed any messages yet.
 ```
 

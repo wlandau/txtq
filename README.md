@@ -6,14 +6,14 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpEKbx76/fileece4f9dd7"
+#> [1] "/tmp/RtmpYKYK2F/file12a24052f6c1"
 q <- txtq(path) # Create the queue.
 ```
 
 The queue uses text files to keep track of your data.
 
 ``` r
-list.files(q$path()) # The text files in the queue live in this folder.
+list.files(q$path()) # The queue's underlying text files live in this folder.
 #> [1] "db"    "head"  "lock"  "total"
 q$list() # You have not pushed any messages yet.
 #> [1] title   message
