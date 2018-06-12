@@ -10,7 +10,7 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/Rtmpp41DAy/file45b52e01a401"
+#> [1] "/tmp/Rtmp2GrWO0/file740660717ae0"
 q <- txtq(path) # Create the queue.
 ```
 
@@ -44,6 +44,9 @@ q$list()
 #> 2 Calculate    sqrt(4)
 #> 3 Calculate   sqrt(16)
 #> 4 Send back   the sum.
+q$list(1) # You can specify the number of messages to list.
+#>   title    message
+#> 1 Hello process B.
 q$count()
 #> [1] 4
 ```
@@ -57,24 +60,26 @@ q$pop(2) # If you pass 2, you are assuming the queue has >=2 messages.
 #> 2 Calculate    sqrt(4)
 ```
 
-Those "popped" messages are not technically in the queue any longer, but we can still see a full log of all the messages that were ever sent.
+Those popped messages are not technically in the queue any longer.
 
 ``` r
 q$list()
 #>       title  message
 #> 1 Calculate sqrt(16)
 #> 2 Send back the sum.
-q$list(1) # You can specify the number of messages to list.
-#>       title  message
-#> 1 Calculate sqrt(16)
+q$count() # Number of messages technically in the queue.
+#> [1] 2
+```
+
+But we still have a full log of all the messages that were ever sent.
+
+``` r
 q$log()
 #>       title    message
 #> 1     Hello process B.
 #> 2 Calculate    sqrt(4)
 #> 3 Calculate   sqrt(16)
 #> 4 Send back   the sum.
-q$count() # Number of messages in the queue.
-#> [1] 2
 q$total() # Number of messages that were ever queued.
 #> [1] 4
 ```
