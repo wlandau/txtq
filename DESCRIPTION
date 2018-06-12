@@ -23,7 +23,6 @@ Imports:
   fs,
   R6
 Suggests:
-  digest,
   parallel,
   testthat
 Encoding: UTF-8
