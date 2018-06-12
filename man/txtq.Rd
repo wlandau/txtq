@@ -18,9 +18,8 @@ and the examples in this help file for instructions.
 }
 \examples{
   path <- tempfile() # Define a path to your queue.
-  path # This path is just a temporary file for demo purposes.
   q <- txtq(path) # Create the queue.
-  list.files(q$path) # The queue lives in this folder.
+  list.files(q$path()) # The queue lives in this folder.
   q$list() # You have not pushed any messages yet.
   # Let's say two parallel processes (A and B) are sharing this queue.
   # Process A sends Process B some messages.

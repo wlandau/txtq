@@ -8,9 +8,8 @@
 #'   the messages.
 #' @examples
 #'   path <- tempfile() # Define a path to your queue.
-#'   path # This path is just a temporary file for demo purposes.
 #'   q <- txtq(path) # Create the queue.
-#'   list.files(q$path) # The queue lives in this folder.
+#'   list.files(q$path()) # The queue lives in this folder.
 #'   q$list() # You have not pushed any messages yet.
 #'   # Let's say two parallel processes (A and B) are sharing this queue.
 #'   # Process A sends Process B some messages.
@@ -59,7 +58,7 @@ txtq <- function(path){
 R6_txtq <- R6::R6Class(
   classname = "R6_txtq",
   private = list(
-    dir = character(0),
+    path_dir = character(0),
     db_file = character(0),
     head_file = character(0),
     lock_file = character(0),
@@ -162,18 +161,13 @@ R6_txtq <- R6::R6Class(
       x
     }
   ),
-  active = list(
-    path = function(){
-      private$dir
-    }
-  ),
   public = list(
     initialize = function(path){
-      private$dir <- fs::dir_create(path)
-      private$db_file <- file.path(private$dir, "db")
-      private$head_file <- file.path(private$dir, "head")
-      private$total_file <- file.path(private$dir, "total")
-      private$lock_file <- file.path(private$dir, "lock")
+      private$path_dir <- fs::dir_create(path)
+      private$db_file <- file.path(private$path_dir, "db")
+      private$head_file <- file.path(private$path_dir, "head")
+      private$total_file <- file.path(private$path_dir, "total")
+      private$lock_file <- file.path(private$path_dir, "lock")
       private$txtq_exclusive({
         fs::file_create(private$db_file)
         if (!file.exists(private$head_file)){
@@ -183,6 +177,9 @@ R6_txtq <- R6::R6Class(
           private$txtq_set_total(0)
         }
       })
+    },
+    path = function(){
+      private$path_dir
     },
     count = function(){
       private$txtq_exclusive(private$txtq_count())
@@ -207,7 +204,7 @@ R6_txtq <- R6::R6Class(
         private$txtq_push(title = title, message = message))
     },
     destroy = function(){
-      unlink(private$dir, recursive = TRUE, force = TRUE)
+      unlink(private$path_dir, recursive = TRUE, force = TRUE)
     }
   )
 )

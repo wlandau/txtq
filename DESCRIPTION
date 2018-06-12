@@ -22,7 +22,8 @@ Imports:
   filelock,
   fs,
   R6
-Suggests: 
+Suggests:
+  digest,
   parallel,
   testthat
 Encoding: UTF-8

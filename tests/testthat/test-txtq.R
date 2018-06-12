@@ -2,7 +2,7 @@ context("txtq")
 
 test_that("txtq utilities work", {
   q <- txtq(tempfile())
-  expect_true(file.exists(q$path))
+  expect_true(file.exists(q$path()))
   expect_true(q$empty())
   expect_equal(q$count(), 0)
   expect_equal(q$total(), 0)
@@ -20,7 +20,7 @@ test_that("txtq utilities work", {
   q$push(title = 1:2, message = 2:3)
   q$push(title = "74", message = "\"128\"")
   q$push(title = "71234", message = "My sentence is not long.")
-  db <- file.path(q$path, "db")
+  db <- file.path(q$path(), "db")
   hash <- digest::digest(db, file = TRUE)
   expect_false(q$empty())
   expect_equal(q$count(), 4)
@@ -58,9 +58,9 @@ test_that("txtq utilities work", {
   )
   expect_equal(q$list(), one_df)
   expect_equal(q$log(), rbind(full_df, one_df))
-  expect_true(file.exists(q$path))
+  expect_true(file.exists(q$path()))
   q$destroy()
-  expect_false(file.exists(q$path))
+  expect_false(file.exists(q$path()))
 })
 
 test_that("txtq is thread safe", {
