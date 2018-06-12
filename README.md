@@ -1,3 +1,7 @@
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
+
 txtq - a small message queue for R
 ==================================
 
@@ -6,7 +10,7 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpYKYK2F/file12a24052f6c1"
+#> [1] "/tmp/RtmpiQeQsC/file1db144aa4894"
 q <- txtq(path) # Create the queue.
 ```
 
