@@ -2,7 +2,7 @@ Package: txtq
 Title: A Small Message Queue for R
 Description: A small message queue for communication
   among parallel R processes.
-Version: 0.0.2
+Version: 0.0.3
 License: MIT + file LICENSE
 URL: https://github.com/wlandau/txtq
 BugReports: https://github.com/wlandau/txtq/issues

@@ -101,7 +101,7 @@ When you are done, you have the option to destroy the files in the queue.
 
 ```{r destroy}
 q$destroy()
-file.exists(q$path)
+file.exists(q$path())
 ```
 
 This entire time, the queue was locked when either process was trying to create, access, or modify it. That way, the results stay correct even when multiple processes try to read or change the data at the same time.

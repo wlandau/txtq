@@ -1,5 +1,6 @@
 
-
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
 txtq - a small message queue for R
 ==================================
@@ -9,14 +10,14 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/Rtmp2GrWO0/file740660717ae0"
+#> [1] "/tmp/RtmpEKbx76/fileece4f9dd7"
 q <- txtq(path) # Create the queue.
 ```
 
 The queue uses text files to keep track of your data.
 
 ``` r
-list.files(q$path) # The text files in the queue live in this folder.
+list.files(q$path()) # The text files in the queue live in this folder.
 #> [1] "db"    "head"  "lock"  "total"
 q$list() # You have not pushed any messages yet.
 #> [1] title   message
@@ -112,7 +113,7 @@ When you are done, you have the option to destroy the files in the queue.
 
 ``` r
 q$destroy()
-file.exists(q$path)
+file.exists(q$path())
 #> [1] FALSE
 ```
 
