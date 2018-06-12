@@ -14,14 +14,17 @@
 #'   q$list() # You have not pushed any messages yet.
 #'   # Let's say two parallel processes (A and B) are sharing this queue.
 #'   # Process A sends Process B some messages.
-#'   # You can only send character strings.
+#'   # You can only send character vectors.
 #'   q$push(title = "Hello", message = "process B.")
-#'   q$push(title = "Calculate", message = "sqrt(4)")
-#'   q$push(title = "Calculate", message = "sqrt(16)")
+#'   q$push(
+#'     title = c("Calculate", "Calculate"),
+#'     message = c("sqrt(4)", "sqrt(16)")
+#'   )
 #'   q$push(title = "Send back", message = "the sum.")
 #'   # See your queued messages.
 #'   q$list()
-#'   q$count()
+#'   q$count() # Number of messages in the queue.
+#'   q$total() # Number of messages that were ever queued.
 #'   q$empty()
 #'   # Now, let's assume process B comes online. It can consume
 #'   # some messages, locking the queue so process A does not
@@ -29,9 +32,11 @@
 #'   q$pop(2) # Return and remove the first messages that were added.
 #'   # With those messages popped, we are farther along in the queue.
 #'   q$list()
+#'   q$count() # Number of messages in the queue.
 #'   q$list(1) # You can specify the number of messages to list.
 #'   # But you still have a log of all the messages that were ever pushed.
 #'   q$log()
+#'   q$total() # Number of messages that were ever queued.
 #'   # q$pop() with no arguments just pops one message.
 #'   # Call pop(-1) to pop all the messages at once.
 #'   q$pop()
@@ -48,26 +53,38 @@
 #'   # or Process B accessed it. That way, the data stays correct
 #'   # no matter who is accessing/modifying the queue and when.
 txtq <- function(path){
-  R6_message_queue$new(path = path)
+  R6_txtq$new(path = path)
 }
 
-R6_message_queue <- R6::R6Class(
-  classname = "R6_message_queue",
+R6_txtq <- R6::R6Class(
+  classname = "R6_txtq",
   private = list(
+    dir = character(0),
+    db_file = character(0),
+    head_file = character(0),
+    lock_file = character(0),
+    total_file = character(0),
     txtq_exclusive = function(code){
-      on.exit(filelock::unlock(x))
-      x <- filelock::lock(self$lock)
+      on.exit(filelock::unlock(lock))
+      lock <- filelock::lock(private$lock_file)
       force(code)
     },
     txtq_get_head = function(){
-      scan(self$head, quiet = TRUE, what = integer())
+      scan(private$head_file, quiet = TRUE, what = integer())
     },
+
     txtq_set_head = function(n){
-      write(x = as.integer(n), file = self$head, append = FALSE)
+      write(x = as.integer(n), file = private$head_file, append = FALSE)
+    },
+    txtq_get_total = function(){
+      scan(private$total_file, quiet = TRUE, what = integer())
+    },
+    txtq_set_total = function(n){
+      write(x = as.integer(n), file = private$total_file, append = FALSE)
     },
     txtq_count = function(){
       as.integer(
-        R.utils::countLines(self$db) - private$txtq_get_head() + 1
+        private$txtq_get_total() - private$txtq_get_head()
       )
     },
     txtq_pop = function(n){
@@ -82,9 +99,11 @@ R6_message_queue <- R6::R6Class(
         message = base64url::base64_urlencode(as.character(message)),
         stringsAsFactors = FALSE
       )
+      new_total <- private$txtq_get_total() + nrow(out)
+      private$txtq_set_total(new_total)
       write.table(
         out,
-        file = self$db,
+        file = private$db_file,
         append = TRUE,
         row.names = FALSE,
         col.names = FALSE,
@@ -93,7 +112,7 @@ R6_message_queue <- R6::R6Class(
       )
     },
     txtq_log = function(){
-      if (length(scan(self$db, quiet = TRUE, what = character())) < 1){
+      if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
         return(
           data.frame(
             title = character(0),
@@ -104,7 +123,7 @@ R6_message_queue <- R6::R6Class(
       }
       private$parse_db(
         read.table(
-          self$db,
+          private$db_file,
           sep = "|",
           stringsAsFactors = FALSE,
           header = FALSE,
@@ -125,9 +144,9 @@ R6_message_queue <- R6::R6Class(
       }
       private$parse_db(
         read.table(
-          self$db,
+          private$db_file,
           sep = "|",
-          skip = private$txtq_get_head() - 1,
+          skip = private$txtq_get_head(),
           nrows = n,
           stringsAsFactors = FALSE,
           header = FALSE,
@@ -143,26 +162,33 @@ R6_message_queue <- R6::R6Class(
       x
     }
   ),
+  active = list(
+    path = function(){
+      private$dir
+    }
+  ),
   public = list(
-    path = character(0),
-    db = character(0),
-    head = character(0),
-    lock = character(0),
     initialize = function(path){
-      self$path <- fs::dir_create(path)
-      self$db <- file.path(self$path, "db")
-      self$head <- file.path(self$path, "head")
-      self$lock <- file.path(self$path, "lock")
+      private$dir <- fs::dir_create(path)
+      private$db_file <- file.path(private$dir, "db")
+      private$head_file <- file.path(private$dir, "head")
+      private$total_file <- file.path(private$dir, "total")
+      private$lock_file <- file.path(private$dir, "lock")
       private$txtq_exclusive({
-        fs::file_create(self$db)
-        fs::file_create(self$head)
-        if (length(private$txtq_get_head()) < 1){
-          private$txtq_set_head(1)
+        fs::file_create(private$db_file)
+        if (!file.exists(private$head_file)){
+          private$txtq_set_head(0)
+        }
+        if (!file.exists(private$total_file)){
+          private$txtq_set_total(0)
         }
       })
     },
     count = function(){
       private$txtq_exclusive(private$txtq_count())
+    },
+    total = function(){
+      private$txtq_exclusive(private$txtq_get_total())
     },
     empty = function(){
       self$count() < 1
@@ -181,7 +207,7 @@ R6_message_queue <- R6::R6Class(
         private$txtq_push(title = title, message = message))
     },
     destroy = function(){
-      unlink(self$path, recursive = TRUE, force = TRUE)
+      unlink(private$dir, recursive = TRUE, force = TRUE)
     }
   )
 )

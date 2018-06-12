@@ -36,16 +36,16 @@ The queue uses text files to keep track of your data.
 ```{r files}
 list.files(q$path) # The text files in the queue live in this folder.
 q$list() # You have not pushed any messages yet.
-q$empty()
-q$count()
 ```
 
 Then, Process A sends instructions to Process B.
 
 ```{r ab}
 q$push(title = "Hello", message = "process B.")
-q$push(title = "Calculate", message = "sqrt(4)")
-q$push(title = "Calculate", message = "sqrt(16)")
+q$push(
+  title = c("Calculate", "Calculate"),
+  message = c("sqrt(4)", "sqrt(16)")
+)
 q$push(title = "Send back", message = "the sum.")
 ```
 
@@ -54,7 +54,6 @@ You can inspect the contents of the queue from either process.
 ```{r list}
 q$list()
 q$count()
-q$empty()
 ```
 
 As Process A is pushing the messages, Process B can consume them.
@@ -63,13 +62,15 @@ As Process A is pushing the messages, Process B can consume them.
 q$pop(2) # If you pass 2, you are assuming the queue has >=2 messages.
 ```
 
-Those "popped" messages are not technically in the queue any longer, but we can still see a full log of all the messages that were ever sent.
+Those "popped" messages are not technically in the queue any longer, but we still have a full log of all the messages that were ever sent.
 
 
 ```{r listafterpop}
 q$list()
 q$list(1) # You can specify the number of messages to list.
 q$log()
+q$count() # Number of messages in the queue.
+q$total() # Number of messages that were ever queued.
 ```
 
 Let's let Process B get the rest of the instructions.

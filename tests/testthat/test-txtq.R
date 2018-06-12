@@ -3,12 +3,9 @@ context("txtq")
 test_that("txtq utilities work", {
   q <- txtq(tempfile())
   expect_true(file.exists(q$path))
-  expect_true(file.exists(q$db))
-  expect_true(file.exists(q$head))
-  expect_true(is.character(q$lock) && length(q$lock) == 1)
   expect_true(q$empty())
   expect_equal(q$count(), 0)
-  expect_equal(scan(q$head, quiet = TRUE), 1)
+  expect_equal(q$total(), 0)
   null_df <- data.frame(
     title = character(0),
     message = character(0),
@@ -18,25 +15,28 @@ test_that("txtq utilities work", {
   expect_equal(q$pop(), null_df)
   expect_equal(q$list(), null_df)
   expect_equal(q$log(), null_df)
-  q$push(title = 1, message = 2)
+  expect_equal(q$count(), 0)
+  expect_equal(q$total(), 0)
+  q$push(title = 1:2, message = 2:3)
   q$push(title = "74", message = "\"128\"")
   q$push(title = "71234", message = "My sentence is not long.")
-  hash <- digest::digest(q$db, file = TRUE)
+  db <- file.path(q$path, "db")
+  hash <- digest::digest(db, file = TRUE)
   expect_false(q$empty())
-  expect_equal(q$count(), 3)
-  expect_equal(scan(q$head, quiet = TRUE), 1)
+  expect_equal(q$count(), 4)
+  expect_equal(q$total(), 4)
   full_df <- data.frame(
-    title = c(1, "74", "71234"),
-    message = c(2, "\"128\"", "My sentence is not long."),
+    title = c(1, 2, "74", "71234"),
+    message = c(2, 3, "\"128\"", "My sentence is not long."),
     stringsAsFactors = FALSE
   )
   expect_equal(q$list(), full_df)
   expect_equal(q$log(), full_df)
   o <- q$pop(1)
   expect_false(q$empty())
-  expect_equal(q$count(), 2)
-  expect_equal(scan(q$head, quiet = TRUE), 2)
-  expect_equal(hash, digest::digest(q$db, file = TRUE))
+  expect_equal(q$count(), 3)
+  expect_equal(q$total(), 4)
+  expect_equal(hash, digest::digest(db, file = TRUE))
   expect_equal(q$list()$title, full_df[-1, "title"])
   expect_equal(q$list()$message, full_df[-1, "message"])
   expect_equal(q$log(), full_df)
@@ -45,14 +45,12 @@ test_that("txtq utilities work", {
   expect_equal(out$message, full_df[-1, "message"])
   expect_true(q$empty())
   expect_equal(q$count(), 0)
-  expect_equal(scan(q$head, quiet = TRUE), 4)
   expect_equal(q$list(), null_df)
   expect_equal(q$log(), full_df)
-  expect_equal(hash, digest::digest(q$db, file = TRUE))
+  expect_equal(hash, digest::digest(db, file = TRUE))
   q$push(title = "new", message = "message")
   expect_false(q$empty())
   expect_equal(q$count(), 1)
-  expect_equal(scan(q$head, quiet = TRUE), 4)
   one_df <- data.frame(
     title = "new",
     message = "message",
@@ -66,23 +64,34 @@ test_that("txtq utilities work", {
 })
 
 test_that("txtq is thread safe", {
-  f <- function(process, path){
-    q <- txtq::txtq(path)
+  f <- function(process, in_, out_){
+    q <- txtq::txtq(in_)
     if (identical(process, "A")){
       while (nrow(q$log()) < 1000 || !q$empty()){
-        q$pop()
+        i <- 1
+        p <- txtq::txtq(out_)
+        msg <- q$pop()
+        if (nrow(msg) > 0){
+          p$push(msg$title, msg$message)
+        }
       }
     } else {
       for (i in seq_len(1000)){
-        q$push(title = i, message = i + 1)
+        q$push(title = as.character(i), message = as.character(i + 1))
       }
     }
   }
   cl <- parallel::makePSOCKcluster(2)
-  path <- tempfile()
-  parallel::parLapply(cl = cl, X = c("A", "B"), fun = f, path = path)
+  in_ <- tempfile()
+  out_ <- tempfile()
+  parallel::parLapply(
+    cl = cl, X = c("A", "B"), fun = f, in_ = in_, out_ = out_)
   parallel::stopCluster(cl)
-  q <- txtq(path)
+  q <- txtq(in_)
+  p <- txtq(out_)
   expect_equal(nrow(q$list()), 0)
   expect_equal(nrow(q$log()), 1000)
+  expect_equal(nrow(p$log()), 1000)
+  expect_equal(p$list(), q$log())
+  expect_equal(p$list(), p$log())
 })

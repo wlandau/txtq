@@ -24,14 +24,17 @@ and the examples in this help file for instructions.
   q$list() # You have not pushed any messages yet.
   # Let's say two parallel processes (A and B) are sharing this queue.
   # Process A sends Process B some messages.
-  # You can only send character strings.
+  # You can only send character vectors.
   q$push(title = "Hello", message = "process B.")
-  q$push(title = "Calculate", message = "sqrt(4)")
-  q$push(title = "Calculate", message = "sqrt(16)")
+  q$push(
+    title = c("Calculate", "Calculate"),
+    message = c("sqrt(4)", "sqrt(16)")
+  )
   q$push(title = "Send back", message = "the sum.")
   # See your queued messages.
   q$list()
-  q$count()
+  q$count() # Number of messages in the queue.
+  q$total() # Number of messages that were ever queued.
   q$empty()
   # Now, let's assume process B comes online. It can consume
   # some messages, locking the queue so process A does not
@@ -39,9 +42,11 @@ and the examples in this help file for instructions.
   q$pop(2) # Return and remove the first messages that were added.
   # With those messages popped, we are farther along in the queue.
   q$list()
+  q$count() # Number of messages in the queue.
   q$list(1) # You can specify the number of messages to list.
   # But you still have a log of all the messages that were ever pushed.
   q$log()
+  q$total() # Number of messages that were ever queued.
   # q$pop() with no arguments just pops one message.
   # Call pop(-1) to pop all the messages at once.
   q$pop()

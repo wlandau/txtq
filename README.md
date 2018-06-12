@@ -10,7 +10,7 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/Rtmpkx5Jqy/file79266fb69281"
+#> [1] "/tmp/Rtmpp41DAy/file45b52e01a401"
 q <- txtq(path) # Create the queue.
 ```
 
@@ -18,22 +18,20 @@ The queue uses text files to keep track of your data.
 
 ``` r
 list.files(q$path) # The text files in the queue live in this folder.
-#> [1] "db"   "head" "lock"
+#> [1] "db"    "head"  "lock"  "total"
 q$list() # You have not pushed any messages yet.
 #> [1] title   message
 #> <0 rows> (or 0-length row.names)
-q$empty()
-#> [1] TRUE
-q$count()
-#> [1] 0
 ```
 
 Then, Process A sends instructions to Process B.
 
 ``` r
 q$push(title = "Hello", message = "process B.")
-q$push(title = "Calculate", message = "sqrt(4)")
-q$push(title = "Calculate", message = "sqrt(16)")
+q$push(
+  title = c("Calculate", "Calculate"),
+  message = c("sqrt(4)", "sqrt(16)")
+)
 q$push(title = "Send back", message = "the sum.")
 ```
 
@@ -48,8 +46,6 @@ q$list()
 #> 4 Send back   the sum.
 q$count()
 #> [1] 4
-q$empty()
-#> [1] FALSE
 ```
 
 As Process A is pushing the messages, Process B can consume them.
@@ -77,6 +73,10 @@ q$log()
 #> 2 Calculate    sqrt(4)
 #> 3 Calculate   sqrt(16)
 #> 4 Send back   the sum.
+q$count() # Number of messages in the queue.
+#> [1] 2
+q$total() # Number of messages that were ever queued.
+#> [1] 4
 ```
 
 Let's let Process B get the rest of the instructions.
