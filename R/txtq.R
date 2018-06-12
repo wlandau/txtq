@@ -71,7 +71,6 @@ R6_txtq <- R6::R6Class(
     txtq_get_head = function(){
       scan(private$head_file, quiet = TRUE, what = integer())
     },
-
     txtq_set_head = function(n){
       write(x = as.integer(n), file = private$head_file, append = FALSE)
     },
