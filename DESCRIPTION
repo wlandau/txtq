@@ -1,6 +1,6 @@
 Package: txtq
-Title: A Small Serverless Message Queue for Parallel Processes
-Description: A txtq is a data structure that lets
+Title: A Small Message Queue for Parallel Processes
+Description: This queue is a data structure that lets
   parallel processes send and receive messages,
   and it can help coordinate the work
   of complicated parallel tasks.
