@@ -134,6 +134,6 @@ There is a [plethora of message queues](http://queues.io/) beyond R, most notabl
 
 1.  Its user interface is incredibly friendly, and its internals are simple. No prior knowledge of sockets or message-passing is required.
 2.  It is incredibly lightweight, R-focused, and easy to install. It only depends on R and a few packages on [CRAN](https://cran.r-project.org).
-3.  Unlike socket-based technologies, `txtq` it is file-based.
+3.  Because `txtq` it is file-based,
     -   The queue persists even if your work crashes, so you can diagnose failures with `q$log()` and `q$list()`.
     -   Job monitoring is easy. Just open another R session and call `q$list()` while your work is running.
