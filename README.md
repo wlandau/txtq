@@ -3,14 +3,14 @@
 [![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
 txtq - a small message queue for parallel processes
-==============================================================
+===================================================
 
 The `txtq` package helps parallel R processes send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
 
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpAZ5YvK/file2a6e46b040c6"
+#> [1] "/tmp/RtmpskGOWI/file244a1d4a5846"
 q <- txtq(path) # Create the queue.
 ```
 
@@ -130,7 +130,7 @@ liteq
 Other message queues
 --------------------
 
-There is a [plethora of message queues](http://queues.io/) beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has advantages for workflows on a single machine.
+There is a [plethora of message queues](http://queues.io/) beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has advantages.
 
 1.  Its user interface is incredibly friendly, and its internals are simple. No prior knowledge of sockets or message-passing is required.
 2.  It is incredibly lightweight, R-focused, and easy to install. It only depends on R and a few packages on [CRAN](https://cran.r-project.org).
