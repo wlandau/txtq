@@ -55,6 +55,10 @@ txtq <- function(path){
   R6_txtq$new(path = path)
 }
 
+#' @title R6 class for `txtq` objects
+#' @description See the [txtq()] function for full documentation and usage.
+#' @seealso txtq
+#' @export
 R6_txtq <- R6::R6Class(
   classname = "R6_txtq",
   private = list(
