@@ -1,6 +1,6 @@
 context("txtq")
 
-test_that("txtq utilities work", {
+test_that("core txtq utilities work", {
   q <- txtq(tempfile())
   expect_true(file.exists(q$path()))
   expect_true(q$empty())
@@ -58,6 +58,54 @@ test_that("txtq utilities work", {
   expect_true(file.exists(q$path()))
   q$destroy()
   expect_false(file.exists(q$path()))
+})
+
+test_that("$reset()", {
+  q <- txtq(tempfile())
+  expect_equal(q$count(), 0)
+  expect_equal(q$total(), 0)
+  expect_equal(nrow(q$log()), 0)
+  q$push(title = 1:5, message = letters[1:5])
+  expect_equal(q$count(), 5)
+  expect_equal(q$total(), 5)
+  expect_equal(nrow(q$log()), 5)
+  q$reset()
+  expect_equal(q$count(), 0)
+  expect_equal(q$total(), 0)
+  expect_equal(nrow(q$log()), 0)
+  q$push(title = 1:5, message = letters[1:5])
+  q$pop(n = 5)
+  expect_equal(q$count(), 0)
+  expect_equal(q$total(), 5)
+  expect_equal(nrow(q$log()), 5)
+  q$reset()
+  expect_equal(q$count(), 0)
+  expect_equal(q$total(), 0)
+  expect_equal(nrow(q$log()), 0)
+})
+
+test_that("$clean()", {
+  df <- function(index){
+    data.frame(
+      title = as.character(index),
+      message = as.character(letters[index]),
+      stringsAsFactors = FALSE
+    )
+  }
+  q <- txtq(tempfile())
+  q$push(title = as.character(1:5), message = letters[1:5])
+  expect_equal(q$pop(n = 2), df(index = 1:2))
+  expect_equal(q$list(), df(index = 3:5))
+  expect_equal(q$log(), df(index = 1:5))
+  expect_equal(q$count(), 3)
+  expect_equal(q$total(), 5)
+  for (i in 1:2){
+    q$clean()
+    expect_equal(q$list(), df(index = 3:5))
+    expect_equal(q$log(), df(index = 3:5))
+    expect_equal(q$count(), 3)
+    expect_equal(q$total(), 3)
+  }
 })
 
 test_that("txtq is thread safe", {

@@ -10,7 +10,7 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpskGOWI/file244a1d4a5846"
+#> [1] "/tmp/RtmpNdhtrG/file75c63c0fa111"
 q <- txtq(path) # Create the queue.
 ```
 
@@ -109,7 +109,60 @@ q$pop()
 #> 1 Results       6
 ```
 
-When you are done, you have the option to destroy the files in the queue.
+The queue can grow large if you are not careful. Pushed messages are kept in the database file.
+
+``` r
+q$push(title = "not", message = "pushed")
+q$count()
+#> [1] 1
+q$total()
+#> [1] 6
+q$list()
+#>   title message
+#> 1   not  pushed
+q$log()
+#>       title    message
+#> 1     Hello process B.
+#> 2 Calculate    sqrt(4)
+#> 3 Calculate   sqrt(16)
+#> 4 Send back   the sum.
+#> 5   Results          6
+#> 6       not     pushed
+```
+
+To keep the database file from getting too big, you can clean out the pushed messages.
+
+``` r
+q$clean()
+q$count()
+#> [1] 1
+q$total()
+#> [1] 1
+q$list()
+#>   title message
+#> 1   not  pushed
+q$log()
+#>   title message
+#> 1   not  pushed
+```
+
+You can also reset the queue to remove all messages, pushed or not.
+
+``` r
+q$reset()
+q$count()
+#> [1] 0
+q$total()
+#> [1] 0
+q$list()
+#> [1] title   message
+#> <0 rows> (or 0-length row.names)
+q$log()
+#> [1] title   message
+#> <0 rows> (or 0-length row.names)
+```
+
+When you are done, you can destroy the files in the queue.
 
 ``` r
 q$destroy()

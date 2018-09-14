@@ -46,7 +46,25 @@
 #'   q$push(title = "Results", message = as.character(sqrt(4) + sqrt(16)))
 #'   # Process A now has access to the results.
 #'   q$pop()
-#'   # Destroy the queue's files.
+#'   # Clean out the pushed messages
+#'   # so the database file does not grow too large.
+#'   q$push(title = "not", message = "pushed")
+#'   q$count()
+#'   q$total()
+#'   q$list()
+#'   q$log()
+#'   q$clean()
+#'   q$count()
+#'   q$total()
+#'   q$list()
+#'   q$log()
+#'   # Optionally remove all messages from the queue.
+#'   q$reset()
+#'   q$count()
+#'   q$total()
+#'   q$list()
+#'   q$log()
+#'   # Destroy the queue's files altogether.
 #'   q$destroy()
 #'   # This whole time, the queue was locked when either Process A
 #'   # or Process B accessed it. That way, the data stays correct
@@ -67,6 +85,22 @@ R6_txtq <- R6::R6Class(
     head_file = character(0),
     lock_file = character(0),
     total_file = character(0),
+    txtq_establish = function(path){
+      private$path_dir <- fs::dir_create(path)
+      private$db_file <- file.path(private$path_dir, "db")
+      private$head_file <- file.path(private$path_dir, "head")
+      private$total_file <- file.path(private$path_dir, "total")
+      private$lock_file <- file.path(private$path_dir, "lock")
+      private$txtq_exclusive({
+        fs::file_create(private$db_file)
+        if (!file.exists(private$head_file)){
+          private$txtq_set_head(0)
+        }
+        if (!file.exists(private$total_file)){
+          private$txtq_set_total(0)
+        }
+      })
+    },
     txtq_exclusive = function(code){
       on.exit(filelock::unlock(lock))
       lock <- filelock::lock(private$lock_file)
@@ -112,6 +146,17 @@ R6_txtq <- R6::R6Class(
         sep = "|",
         quote = FALSE
       )
+    },
+    txtq_reset = function(){
+      unlink(private$db_file, force = TRUE)
+      fs::file_create(private$db_file)
+      private$txtq_set_head(0)
+      private$txtq_set_total(0)
+    },
+    txtq_clean = function(){
+      keep <- private$txtq_pop(n = private$txtq_count())
+      private$txtq_reset()
+      private$txtq_push(title = keep$title, message = keep$message)
     },
     txtq_log = function(){
       if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
@@ -166,20 +211,7 @@ R6_txtq <- R6::R6Class(
   ),
   public = list(
     initialize = function(path){
-      private$path_dir <- fs::dir_create(path)
-      private$db_file <- file.path(private$path_dir, "db")
-      private$head_file <- file.path(private$path_dir, "head")
-      private$total_file <- file.path(private$path_dir, "total")
-      private$lock_file <- file.path(private$path_dir, "lock")
-      private$txtq_exclusive({
-        fs::file_create(private$db_file)
-        if (!file.exists(private$head_file)){
-          private$txtq_set_head(0)
-        }
-        if (!file.exists(private$total_file)){
-          private$txtq_set_total(0)
-        }
-      })
+      private$txtq_establish(path)
     },
     path = function(){
       private$path_dir
@@ -191,7 +223,7 @@ R6_txtq <- R6::R6Class(
       private$txtq_exclusive(private$txtq_get_total())
     },
     empty = function(){
-      self$count() < 1
+      private$txtq_exclusive(private$txtq_count()) < 1
     },
     log = function(){
       private$txtq_exclusive(private$txtq_log())
@@ -205,6 +237,12 @@ R6_txtq <- R6::R6Class(
     push = function(title, message){
       private$txtq_exclusive(
         private$txtq_push(title = title, message = message))
+    },
+    reset = function(){
+      private$txtq_exclusive(private$txtq_reset())
+    },
+    clean = function(){
+      private$txtq_exclusive(private$txtq_clean())
     },
     destroy = function(){
       unlink(private$path_dir, recursive = TRUE, force = TRUE)

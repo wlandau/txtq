@@ -97,7 +97,37 @@ Process A can now see the results.
 q$pop()
 ```
 
-When you are done, you have the option to destroy the files in the queue.
+The queue can grow large if you are not careful. Pushed messages are kept in the database file.
+
+```{r largedb}
+q$push(title = "not", message = "pushed")
+q$count()
+q$total()
+q$list()
+q$log()
+```
+
+To keep the database file from getting too big, you can clean out the pushed messages.
+
+```{r clean}
+q$clean()
+q$count()
+q$total()
+q$list()
+q$log()
+```
+
+You can also reset the queue to remove all messages, pushed or not.
+
+```{r reset}
+q$reset()
+q$count()
+q$total()
+q$list()
+q$log()
+```
+
+When you are done, you can destroy the files in the queue.
 
 ```{r destroy}
 q$destroy()
