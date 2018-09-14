@@ -52,9 +52,7 @@
 #'   # or Process B accessed it. That way, the data stays correct
 #'   # no matter who is accessing/modifying the queue and when.
 txtq <- function(path){
-  out <- R6_txtq$new()
-  out$populate(path = path)
-  out
+  R6_txtq$new(path = path)
 }
 
 #' @title R6 class for `txtq` objects
@@ -173,10 +171,10 @@ R6_txtq <- R6::R6Class(
     }
   ),
   public = list(
-    initialize = function(){
-      invisible()
+    initialize = function(path){
+      self$establish(path)
     },
-    populate = function(path){
+    establish = function(path){
       private$path_dir <- fs::dir_create(path)
       private$db_file <- file.path(private$path_dir, "db")
       private$head_file <- file.path(private$path_dir, "head")
