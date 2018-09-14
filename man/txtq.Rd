@@ -56,9 +56,9 @@ and the examples in this help file for instructions.
   q$push(title = "Results", message = as.character(sqrt(4) + sqrt(16)))
   # Process A now has access to the results.
   q$pop()
-  # Clean out the pushed messages
+  # Clean out the popped messages
   # so the database file does not grow too large.
-  q$push(title = "not", message = "pushed")
+  q$push(title = "not", message = "popped")
   q$count()
   q$total()
   q$list()

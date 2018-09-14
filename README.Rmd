@@ -97,17 +97,17 @@ Process A can now see the results.
 q$pop()
 ```
 
-The queue can grow large if you are not careful. Pushed messages are kept in the database file.
+The queue can grow large if you are not careful. Popped messages are kept in the database file.
 
 ```{r largedb}
-q$push(title = "not", message = "pushed")
+q$push(title = "not", message = "popped")
 q$count()
 q$total()
 q$list()
 q$log()
 ```
 
-To keep the database file from getting too big, you can clean out the pushed messages.
+To keep the database file from getting too big, you can clean out the popped messages.
 
 ```{r clean}
 q$clean()
@@ -117,7 +117,7 @@ q$list()
 q$log()
 ```
 
-You can also reset the queue to remove all messages, pushed or not.
+You can also reset the queue to remove all messages, popped or not.
 
 ```{r reset}
 q$reset()
