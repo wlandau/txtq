@@ -135,6 +135,11 @@ R6_txtq <- R6::R6Class(
       private$txtq_set_head(0)
       private$txtq_set_total(0)
     },
+    txtq_clean = function(){
+      keep <- private$txtq_pop(n = private$txtq_count())
+      private$txtq_reset()
+      private$txtq_push(title = keep$title, message = keep$message)
+    },
     txtq_log = function(){
       if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
         return(
@@ -220,6 +225,9 @@ R6_txtq <- R6::R6Class(
     },
     reset = function(){
       private$txtq_exclusive(private$txtq_reset())
+    },
+    clean = function(){
+      private$txtq_exclusive(private$txtq_clean())
     },
     destroy = function(){
       unlink(private$path_dir, recursive = TRUE, force = TRUE)

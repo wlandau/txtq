@@ -84,6 +84,30 @@ test_that("$reset()", {
   expect_equal(nrow(q$log()), 0)
 })
 
+test_that("$clean()", {
+  df <- function(index){
+    data.frame(
+      title = as.character(index),
+      message = as.character(letters[index]),
+      stringsAsFactors = FALSE
+    )
+  }
+  q <- txtq(tempfile())
+  q$push(title = as.character(1:5), message = letters[1:5])
+  expect_equal(q$pop(n = 2), df(index = 1:2))
+  expect_equal(q$list(), df(index = 3:5))
+  expect_equal(q$log(), df(index = 1:5))
+  expect_equal(q$count(), 3)
+  expect_equal(q$total(), 5)
+  for (i in 1:2){
+    q$clean()
+    expect_equal(q$list(), df(index = 3:5))
+    expect_equal(q$log(), df(index = 3:5))
+    expect_equal(q$count(), 3)
+    expect_equal(q$total(), 3)
+  }
+})
+
 test_that("txtq is thread safe", {
   f <- function(process, in_, out_){
     q <- txtq::txtq(in_)
