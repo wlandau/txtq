@@ -115,6 +115,12 @@ R6_txtq <- R6::R6Class(
         quote = FALSE
       )
     },
+    txtq_reset = function(){
+      unlink(private$db_file, force = TRUE)
+      fs::file_create(private$db_file)
+      private$txtq_set_head(0)
+      private$txtq_set_total(0)
+    },
     txtq_log = function(){
       if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
         return(
@@ -184,7 +190,7 @@ R6_txtq <- R6::R6Class(
         if (!file.exists(private$total_file)){
           private$txtq_set_total(0)
         }
-      }) 
+      })
     },
     path = function(){
       private$path_dir
@@ -210,6 +216,9 @@ R6_txtq <- R6::R6Class(
     push = function(title, message){
       private$txtq_exclusive(
         private$txtq_push(title = title, message = message))
+    },
+    reset = function(){
+      private$txtq_exclusive(private$txtq_reset())
     },
     destroy = function(){
       unlink(private$path_dir, recursive = TRUE, force = TRUE)
