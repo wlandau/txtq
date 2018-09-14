@@ -67,6 +67,22 @@ R6_txtq <- R6::R6Class(
     head_file = character(0),
     lock_file = character(0),
     total_file = character(0),
+    txtq_establish = function(path){
+      private$path_dir <- fs::dir_create(path)
+      private$db_file <- file.path(private$path_dir, "db")
+      private$head_file <- file.path(private$path_dir, "head")
+      private$total_file <- file.path(private$path_dir, "total")
+      private$lock_file <- file.path(private$path_dir, "lock")
+      private$txtq_exclusive({
+        fs::file_create(private$db_file)
+        if (!file.exists(private$head_file)){
+          private$txtq_set_head(0)
+        }
+        if (!file.exists(private$total_file)){
+          private$txtq_set_total(0)
+        }
+      })
+    },
     txtq_exclusive = function(code){
       on.exit(filelock::unlock(lock))
       lock <- filelock::lock(private$lock_file)
@@ -172,23 +188,10 @@ R6_txtq <- R6::R6Class(
   ),
   public = list(
     initialize = function(path){
-      self$establish(path)
+      private$txtq_establish(path)
     },
     establish = function(path){
-      private$path_dir <- fs::dir_create(path)
-      private$db_file <- file.path(private$path_dir, "db")
-      private$head_file <- file.path(private$path_dir, "head")
-      private$total_file <- file.path(private$path_dir, "total")
-      private$lock_file <- file.path(private$path_dir, "lock")
-      private$txtq_exclusive({
-        fs::file_create(private$db_file)
-        if (!file.exists(private$head_file)){
-          private$txtq_set_head(0)
-        }
-        if (!file.exists(private$total_file)){
-          private$txtq_set_total(0)
-        }
-      })
+      private$txtq_establish(path)
     },
     path = function(){
       private$path_dir
@@ -200,7 +203,7 @@ R6_txtq <- R6::R6Class(
       private$txtq_exclusive(private$txtq_get_total())
     },
     empty = function(){
-      self$count() < 1
+      private$txtq_exclusive(private$txtq_count()) < 1
     },
     log = function(){
       private$txtq_exclusive(private$txtq_log())
