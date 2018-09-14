@@ -56,7 +56,25 @@ and the examples in this help file for instructions.
   q$push(title = "Results", message = as.character(sqrt(4) + sqrt(16)))
   # Process A now has access to the results.
   q$pop()
-  # Destroy the queue's files.
+  # Clean out the pushed messages
+  # so the database file does not grow too large.
+  q$push(title = "not", message = "pushed")
+  q$count()
+  q$total()
+  q$list()
+  q$log()
+  q$clean()
+  q$count()
+  q$total()
+  q$list()
+  q$log()
+  # Optionally remove all messages from the queue.
+  q$reset()
+  q$count()
+  q$total()
+  q$list()
+  q$log()
+  # Destroy the queue's files altogether.
   q$destroy()
   # This whole time, the queue was locked when either Process A
   # or Process B accessed it. That way, the data stays correct
