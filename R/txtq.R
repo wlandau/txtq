@@ -213,9 +213,6 @@ R6_txtq <- R6::R6Class(
     initialize = function(path){
       private$txtq_establish(path)
     },
-    establish = function(path){
-      private$txtq_establish(path)
-    },
     path = function(){
       private$path_dir
     },
