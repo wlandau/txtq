@@ -1,20 +1,28 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
-txtq - a small message queue for parallel processes
-===================================================
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq)
+[![Travis build
+status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq)
+[![AppVeyor build
+status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq)
+[![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
-The `txtq` package helps parallel R processes send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
+# txtq - a small message queue for parallel processes
+
+The `txtq` package helps parallel R processes send messages to each
+other. Let’s say Process A and Process B are working on a parallel task
+together. First, both processes grab the queue.
 
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpNdhtrG/file75c63c0fa111"
+#> [1] "/tmp/RtmpNLINHf/file5eda3fd73727"
 q <- txtq(path) # Create the queue.
 ```
 
-The queue uses text files to keep track of your data.
+The queue uses text files to keep track of your
+data.
 
 ``` r
 list.files(q$path()) # The queue's underlying text files live in this folder.
@@ -84,7 +92,7 @@ q$total() # Number of messages that were ever queued.
 #> [1] 4
 ```
 
-Let's let Process B get the rest of the instructions.
+Let’s let Process B get the rest of the instructions.
 
 ``` r
 q$pop() # q$pop() with no arguments just pops one message.
@@ -95,7 +103,8 @@ q$pop() # Call q$pop(-1) to pop all the messages at once.
 #> 1 Send back the sum.
 ```
 
-Now let's say Process B follows the instructions in the messages. The last step is to send the results back to Process A.
+Now let’s say Process B follows the instructions in the messages. The
+last step is to send the results back to Process A.
 
 ``` r
 q$push(title = "Results", message = as.character(sqrt(4) + sqrt(16)))
@@ -109,17 +118,18 @@ q$pop()
 #> 1 Results       6
 ```
 
-The queue can grow large if you are not careful. Pushed messages are kept in the database file.
+The queue can grow large if you are not careful. Popped messages are
+kept in the database file.
 
 ``` r
-q$push(title = "not", message = "pushed")
+q$push(title = "not", message = "popped")
 q$count()
 #> [1] 1
 q$total()
 #> [1] 6
 q$list()
 #>   title message
-#> 1   not  pushed
+#> 1   not  popped
 q$log()
 #>       title    message
 #> 1     Hello process B.
@@ -127,10 +137,11 @@ q$log()
 #> 3 Calculate   sqrt(16)
 #> 4 Send back   the sum.
 #> 5   Results          6
-#> 6       not     pushed
+#> 6       not     popped
 ```
 
-To keep the database file from getting too big, you can clean out the pushed messages.
+To keep the database file from getting too big, you can clean out the
+popped messages.
 
 ``` r
 q$clean()
@@ -140,13 +151,13 @@ q$total()
 #> [1] 1
 q$list()
 #>   title message
-#> 1   not  pushed
+#> 1   not  popped
 q$log()
 #>   title message
-#> 1   not  pushed
+#> 1   not  popped
 ```
 
-You can also reset the queue to remove all messages, pushed or not.
+You can also reset the queue to remove all messages, popped or not.
 
 ``` r
 q$reset()
@@ -170,23 +181,40 @@ file.exists(q$path())
 #> [1] FALSE
 ```
 
-This entire time, the queue was locked when either process was trying to create, access, or modify it. That way, the results stay correct even when multiple processes try to read or change the data at the same time.
+This entire time, the queue was locked when either process was trying to
+create, access, or modify it. That way, the results stay correct even
+when multiple processes try to read or change the data at the same time.
 
-Similar work
-============
+# Similar work
 
-liteq
------
+## liteq
 
-[Gábor Csárdi](https://github.com/gaborcsardi)'s [`liteq`](https://github.com/r-lib/liteq) package offers essentially the same functionality implemented with SQLite. It has a some additional features, such as the ability to detect crashed workers and re-queue failed messages, but it was in an early stage of development at the time `txtq` was released.
+[Gábor Csárdi](https://github.com/gaborcsardi)’s
+[`liteq`](https://github.com/r-lib/liteq) package offers essentially the
+same functionality implemented with SQLite. It has a some additional
+features, such as the ability to detect crashed workers and re-queue
+failed messages, but it was in an early stage of development at the time
+`txtq` was released.
 
-Other message queues
---------------------
+## Other message queues
 
-There is a [plethora of message queues](http://queues.io/) beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has advantages.
+There is a [plethora of message queues](http://queues.io/) beyond R,
+most notably [ZeroMQ](http://zeromq.org) and
+[RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen
+Ooms](http://github.com/jeroen) and [Whit
+Armstrong](https://github.com/armstrtw) maintain
+[`rzmq`](https://github.com/ropensci/rzmq), a package to work with
+[ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has
+advantages.
 
-1.  Its user interface is incredibly friendly, and its internals are simple. No prior knowledge of sockets or message-passing is required.
-2.  It is incredibly lightweight, R-focused, and easy to install. It only depends on R and a few packages on [CRAN](https://cran.r-project.org).
+1.  Its user interface is incredibly friendly, and its internals are
+    simple. No prior knowledge of sockets or message-passing is
+    required.
+2.  It is incredibly lightweight, R-focused, and easy to install. It
+    only depends on R and a few packages on
+    [CRAN](https://cran.r-project.org).
 3.  Because `txtq` it is file-based,
-    -   The queue persists even if your work crashes, so you can diagnose failures with `q$log()` and `q$list()`.
-    -   Job monitoring is easy. Just open another R session and call `q$list()` while your work is running.
+      - The queue persists even if your work crashes, so you can
+        diagnose failures with `q$log()` and `q$list()`.
+      - Job monitoring is easy. Just open another R session and call
+        `q$list()` while your work is running.
