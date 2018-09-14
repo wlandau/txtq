@@ -17,7 +17,7 @@ together. First, both processes grab the queue.
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpNLINHf/file5eda3fd73727"
+#> [1] "/tmp/RtmpxqsAqx/file62ca4dbdca58"
 q <- txtq(path) # Create the queue.
 ```
 
@@ -207,11 +207,10 @@ Armstrong](https://github.com/armstrtw) maintain
 [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has
 advantages.
 
-1.  Its user interface is incredibly friendly, and its internals are
-    simple. No prior knowledge of sockets or message-passing is
-    required.
-2.  It is incredibly lightweight, R-focused, and easy to install. It
-    only depends on R and a few packages on
+1.  The `txtq` user interface is friendly, and its internals are simple.
+    No prior knowledge of sockets or message-passing is required.
+2.  `txtq` is lightweight, R-focused, and easy to install. It only
+    depends on R and a few packages on
     [CRAN](https://cran.r-project.org).
 3.  Because `txtq` it is file-based,
       - The queue persists even if your work crashes, so you can
