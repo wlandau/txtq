@@ -160,13 +160,7 @@ R6_txtq <- R6::R6Class(
     },
     txtq_log = function(){
       if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
-        return(
-          data.frame(
-            title = character(0),
-            message = character(0),
-            stringsAsFactors = FALSE
-          )
-        )
+        return(null_log)
       }
       private$parse_db(
         read.table(
@@ -181,13 +175,7 @@ R6_txtq <- R6::R6Class(
     },
     txtq_list = function(n){
       if (private$txtq_count() < 1){
-        return(
-          data.frame(
-            title = character(0),
-            message = character(0),
-            stringsAsFactors = FALSE
-          )
-        )
+        return(null_log)
       }
       private$parse_db(
         read.table(
@@ -248,4 +236,10 @@ R6_txtq <- R6::R6Class(
       unlink(private$path_dir, recursive = TRUE, force = TRUE)
     }
   )
+)
+
+null_log <- data.frame(
+  title = character(0),
+  message = character(0),
+  stringsAsFactors = FALSE
 )
