@@ -1,3 +1,7 @@
+# Version 0.1.0.9000
+
+- Store the POSIXct `Sys.time()` stamp of when each message is pushed.
+
 # Version 0.1.0
 
 - Add a new `$clean()` method to remove pushed messages from the database file.

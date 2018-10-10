@@ -31,7 +31,7 @@ path # In real life, temp files go away when the session exits, so be careful.
 q <- txtq(path) # Create the queue.
 ```
 
-The queue uses text files to keep track of your data.
+The queue uses text files to keep track of your data. In the data frame of messages, the `time` column is the POSIXct `Sys.time()` stamp of when each message was pushed.
 
 ```{r files}
 list.files(q$path()) # The queue's underlying text files live in this folder.

@@ -31,6 +31,8 @@ and the examples in this help file for instructions.
   )
   q$push(title = "Send back", message = "the sum.")
   # See your queued messages.
+  # The `time` is the POSIXct `Sys.time()` stamp
+  # of when the message was pushed.
   q$list()
   q$count() # Number of messages in the queue.
   q$total() # Number of messages that were ever queued.
