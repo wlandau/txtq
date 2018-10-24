@@ -21,6 +21,8 @@
 #'   )
 #'   q$push(title = "Send back", message = "the sum.")
 #'   # See your queued messages.
+#'   # The `time` is the POSIXct `Sys.time()` stamp
+#'   # of when the message was pushed.
 #'   q$list()
 #'   q$count() # Number of messages in the queue.
 #'   q$total() # Number of messages that were ever queued.
@@ -133,6 +135,7 @@ R6_txtq <- R6::R6Class(
       out <- data.frame(
         title = base64url::base64_urlencode(as.character(title)),
         message = base64url::base64_urlencode(as.character(message)),
+        time = base64url::base64_urlencode(as.character(Sys.time())),
         stringsAsFactors = FALSE
       )
       new_total <- private$txtq_get_total() + nrow(out)
@@ -191,9 +194,10 @@ R6_txtq <- R6::R6Class(
       )
     },
     parse_db = function(x){
-      colnames(x) <- c("title", "message")
+      colnames(x) <- c("title", "message", "time")
       x$title <- base64url::base64_urldecode(x$title)
       x$message <- base64url::base64_urldecode(x$message)
+      x$time <- as.POSIXct(base64url::base64_urldecode(x$time))
       x
     }
   ),
@@ -241,5 +245,6 @@ R6_txtq <- R6::R6Class(
 null_log <- data.frame(
   title = character(0),
   message = character(0),
+  time = as.POSIXct(character(0)),
   stringsAsFactors = FALSE
 )

@@ -9,6 +9,7 @@ test_that("core txtq utilities work", {
   null_df <- data.frame(
     title = character(0),
     message = character(0),
+    time = as.POSIXct(character(0)),
     stringsAsFactors = FALSE
   )
   expect_equal(q$pop(), null_df)
@@ -29,22 +30,23 @@ test_that("core txtq utilities work", {
     message = c(2, 3, "\"128\"", "My sentence is not long."),
     stringsAsFactors = FALSE
   )
-  expect_equal(q$list(), full_df)
-  expect_equal(q$log(), full_df)
+  cols <- c("title", "message")
+  expect_equal(q$list()[, cols], full_df)
+  expect_equal(q$log()[, cols], full_df)
   o <- q$pop(1)
   expect_false(q$empty())
   expect_equal(q$count(), 3)
   expect_equal(q$total(), 4)
   expect_equal(q$list()$title, full_df[-1, "title"])
   expect_equal(q$list()$message, full_df[-1, "message"])
-  expect_equal(q$log(), full_df)
+  expect_equal(q$log()[, cols], full_df)
   out <- q$pop(-1)
   expect_equal(out$title, full_df[-1, "title"])
   expect_equal(out$message, full_df[-1, "message"])
   expect_true(q$empty())
   expect_equal(q$count(), 0)
   expect_equal(q$list(), null_df)
-  expect_equal(q$log(), full_df)
+  expect_equal(q$log()[, cols], full_df)
   q$push(title = "new", message = "message")
   expect_false(q$empty())
   expect_equal(q$count(), 1)
@@ -53,8 +55,8 @@ test_that("core txtq utilities work", {
     message = "message",
     stringsAsFactors = FALSE
   )
-  expect_equal(q$list(), one_df)
-  expect_equal(q$log(), rbind(full_df, one_df))
+  expect_equal(q$list()[, cols], one_df)
+  expect_equal(q$log()[, cols], rbind(full_df, one_df))
   expect_true(file.exists(q$path()))
   q$destroy()
   expect_false(file.exists(q$path()))
@@ -92,17 +94,18 @@ test_that("$clean()", {
       stringsAsFactors = FALSE
     )
   }
+  cols <- c("title", "message")
   q <- txtq(tempfile())
   q$push(title = as.character(1:5), message = letters[1:5])
-  expect_equal(q$pop(n = 2), df(index = 1:2))
-  expect_equal(q$list(), df(index = 3:5))
-  expect_equal(q$log(), df(index = 1:5))
+  expect_equal(q$pop(n = 2)[, cols], df(index = 1:2))
+  expect_equal(q$list()[, cols], df(index = 3:5))
+  expect_equal(q$log()[, cols], df(index = 1:5))
   expect_equal(q$count(), 3)
   expect_equal(q$total(), 5)
   for (i in 1:2){
     q$clean()
-    expect_equal(q$list(), df(index = 3:5))
-    expect_equal(q$log(), df(index = 3:5))
+    expect_equal(q$list()[, cols], df(index = 3:5))
+    expect_equal(q$log()[, cols], df(index = 3:5))
     expect_equal(q$count(), 3)
     expect_equal(q$total(), 3)
   }
@@ -134,9 +137,10 @@ test_that("txtq is thread safe", {
   parallel::stopCluster(cl)
   q <- txtq(in_)
   p <- txtq(out_)
+  cols <- c("title", "message")
   expect_equal(nrow(q$list()), 0)
   expect_equal(nrow(q$log()), 1000)
   expect_equal(nrow(p$log()), 1000)
-  expect_equal(p$list(), q$log())
-  expect_equal(p$list(), p$log())
+  expect_equal(p$list()[, cols], q$log()[, cols])
+  expect_equal(p$list()[, cols], p$log()[, cols])
 })
