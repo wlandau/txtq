@@ -1,4 +1,4 @@
-# Version 0.1.0.9000
+# Version 0.1.1
 
 - Store the POSIXct `Sys.time()` stamp of when each message is pushed.
 
