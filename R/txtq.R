@@ -166,32 +166,47 @@ R6_txtq <- R6::R6Class(
         return(null_log)
       }
       private$parse_db(
-        read.table(
-          private$db_file,
-          sep = "|",
-          stringsAsFactors = FALSE,
-          header = FALSE,
-          quote = "",
-          na.strings = NULL
+        read_db_table(
+          dbfile=private$db_file,
+          skip = 0,
+          n=-1
         )
       )
+      # private$parse_db(
+      #   read.table(
+      #     private$db_file,
+      #     sep = "|",
+      #     stringsAsFactors = FALSE,
+      #     header = FALSE,
+      #     quote = "",
+      #     na.strings = NULL
+      #   )
+      # )
     },
     txtq_list = function(n){
       if (private$txtq_count() < 1){
         return(null_log)
       }
+      #browser()
       private$parse_db(
-        read.table(
-          private$db_file,
-          sep = "|",
+        read_db_table(
+          dbfile=private$db_file,
           skip = private$txtq_get_head(),
-          nrows = n,
-          stringsAsFactors = FALSE,
-          header = FALSE,
-          quote = "",
-          na.strings = NULL
+          n=n
         )
       )
+      # private$parse_db(
+      #   read.table(
+      #     private$db_file,
+      #     sep = "|",
+      #     skip = private$txtq_get_head(),
+      #     nrows = n,
+      #     stringsAsFactors = FALSE,
+      #     header = FALSE,
+      #     quote = "",
+      #     na.strings = NULL
+      #   )
+      # )
     },
     parse_db = function(x){
       colnames(x) <- c("title", "message", "time")
@@ -248,3 +263,18 @@ null_log <- data.frame(
   time = as.POSIXct(character(0)),
   stringsAsFactors = FALSE
 )
+
+
+read_db_table <- function(dbfile, skip, n){
+  t <- scan(
+    dbfile, 
+    what=character(),
+    sep = "|",
+    skip = skip,
+    nmax = 3 * n,
+    quote = "",
+    na.strings = NULL,
+    quiet = TRUE)
+  as.data.frame(matrix(t, byrow=T, ncol=3), stringsAsFactors = FALSE)
+}
+
