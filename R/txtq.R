@@ -177,7 +177,6 @@ R6_txtq <- R6::R6Class(
       if (private$txtq_count() < 1){
         return(null_log)
       }
-      #browser()
       private$parse_db(
         read_db_table(
           dbfile=private$db_file,
