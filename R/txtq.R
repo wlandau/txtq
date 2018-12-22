@@ -172,16 +172,6 @@ R6_txtq <- R6::R6Class(
           n=-1
         )
       )
-      # private$parse_db(
-      #   read.table(
-      #     private$db_file,
-      #     sep = "|",
-      #     stringsAsFactors = FALSE,
-      #     header = FALSE,
-      #     quote = "",
-      #     na.strings = NULL
-      #   )
-      # )
     },
     txtq_list = function(n){
       if (private$txtq_count() < 1){
@@ -195,18 +185,6 @@ R6_txtq <- R6::R6Class(
           n=n
         )
       )
-      # private$parse_db(
-      #   read.table(
-      #     private$db_file,
-      #     sep = "|",
-      #     skip = private$txtq_get_head(),
-      #     nrows = n,
-      #     stringsAsFactors = FALSE,
-      #     header = FALSE,
-      #     quote = "",
-      #     na.strings = NULL
-      #   )
-      # )
     },
     parse_db = function(x){
       colnames(x) <- c("title", "message", "time")
