@@ -144,3 +144,13 @@ test_that("txtq is thread safe", {
   expect_equal(p$list()[, cols], q$log()[, cols])
   expect_equal(p$list()[, cols], p$log()[, cols])
 })
+
+
+test_that("long message", {
+  q <- txtq(tempfile())
+  s <- paste(sample(LETTERS, 3000000, TRUE), collapse = "")
+  q$push(title = "long", message = s)
+  out <- q$pop(-1)
+  expect_equal(s, out$message)
+  q$destroy()
+})

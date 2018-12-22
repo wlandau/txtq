@@ -166,13 +166,10 @@ R6_txtq <- R6::R6Class(
         return(null_log)
       }
       private$parse_db(
-        read.table(
-          private$db_file,
-          sep = "|",
-          stringsAsFactors = FALSE,
-          header = FALSE,
-          quote = "",
-          na.strings = NULL
+        read_db_table(
+          dbfile = private$db_file,
+          skip = 0,
+          n = -1
         )
       )
     },
@@ -181,15 +178,10 @@ R6_txtq <- R6::R6Class(
         return(null_log)
       }
       private$parse_db(
-        read.table(
-          private$db_file,
-          sep = "|",
+        read_db_table(
+          dbfile = private$db_file,
           skip = private$txtq_get_head(),
-          nrows = n,
-          stringsAsFactors = FALSE,
-          header = FALSE,
-          quote = "",
-          na.strings = NULL
+          n = n
         )
       )
     },
@@ -248,3 +240,17 @@ null_log <- data.frame(
   time = as.POSIXct(character(0)),
   stringsAsFactors = FALSE
 )
+
+
+read_db_table <- function(dbfile, skip, n){
+  t <- scan(
+    dbfile,
+    what = character(),
+    sep = "|",
+    skip = skip,
+    nmax = 3 * n,
+    quote = "",
+    na.strings = NULL,
+    quiet = TRUE)
+  as.data.frame(matrix(t, byrow = TRUE, ncol = 3), stringsAsFactors = FALSE)
+}
