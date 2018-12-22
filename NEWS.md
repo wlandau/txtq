@@ -1,3 +1,7 @@
+# Version 0.1.2
+
+- Improved read performance for long messages.
+
 # Version 0.1.1
 
 - Store the POSIXct `Sys.time()` stamp of when each message is pushed.
