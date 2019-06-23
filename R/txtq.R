@@ -71,7 +71,7 @@
 #'   # This whole time, the queue was locked when either Process A
 #'   # or Process B accessed it. That way, the data stays correct
 #'   # no matter who is accessing/modifying the queue and when.
-txtq <- function(path){
+txtq <- function(path) {
   R6_txtq$new(path = path)
 }
 
@@ -87,7 +87,7 @@ R6_txtq <- R6::R6Class(
     head_file = character(0),
     lock_file = character(0),
     total_file = character(0),
-    txtq_establish = function(path){
+    txtq_establish = function(path) {
       private$path_dir <- fs::dir_create(path)
       private$db_file <- file.path(private$path_dir, "db")
       private$head_file <- file.path(private$path_dir, "head")
@@ -95,47 +95,47 @@ R6_txtq <- R6::R6Class(
       private$lock_file <- file.path(private$path_dir, "lock")
       private$txtq_exclusive({
         fs::file_create(private$db_file)
-        if (!file.exists(private$head_file)){
+        if (!file.exists(private$head_file)) {
           private$txtq_set_head(0)
         }
-        if (!file.exists(private$total_file)){
+        if (!file.exists(private$total_file)) {
           private$txtq_set_total(0)
         }
       })
     },
-    txtq_exclusive = function(code){
+    txtq_exclusive = function(code) {
       on.exit(filelock::unlock(lock))
       lock <- filelock::lock(private$lock_file)
       force(code)
     },
-    txtq_get_head = function(){
+    txtq_get_head = function() {
       scan(private$head_file, quiet = TRUE, what = integer())
     },
-    txtq_set_head = function(n){
+    txtq_set_head = function(n) {
       write(x = as.integer(n), file = private$head_file, append = FALSE)
     },
-    txtq_get_total = function(){
+    txtq_get_total = function() {
       scan(private$total_file, quiet = TRUE, what = integer())
     },
-    txtq_set_total = function(n){
+    txtq_set_total = function(n) {
       write(x = as.integer(n), file = private$total_file, append = FALSE)
     },
-    txtq_count = function(){
+    txtq_count = function() {
       as.integer(
         private$txtq_get_total() - private$txtq_get_head()
       )
     },
-    txtq_pop = function(n){
+    txtq_pop = function(n) {
       out <- private$txtq_list(n = n)
       new_head <- private$txtq_get_head() + nrow(out)
       private$txtq_set_head(new_head)
       out
     },
-    txtq_push = function(title, message){
+    txtq_push = function(title, message) {
       out <- data.frame(
         title = base64url::base64_urlencode(as.character(title)),
         message = base64url::base64_urlencode(as.character(message)),
-        time = base64url::base64_urlencode(as.character(Sys.time())),
+        time = base64url::base64_urlencode(as.character(nanotime())),
         stringsAsFactors = FALSE
       )
       new_total <- private$txtq_get_total() + nrow(out)
@@ -150,18 +150,18 @@ R6_txtq <- R6::R6Class(
         quote = FALSE
       )
     },
-    txtq_reset = function(){
+    txtq_reset = function() {
       unlink(private$db_file, force = TRUE)
       fs::file_create(private$db_file)
       private$txtq_set_head(0)
       private$txtq_set_total(0)
     },
-    txtq_clean = function(){
+    txtq_clean = function() {
       keep <- private$txtq_pop(n = private$txtq_count())
       private$txtq_reset()
       private$txtq_push(title = keep$title, message = keep$message)
     },
-    txtq_log = function(){
+    txtq_log = function() {
       if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
         return(null_log)
       }
@@ -174,7 +174,7 @@ R6_txtq <- R6::R6Class(
       )
     },
     txtq_list = function(n){
-      if (private$txtq_count() < 1){
+      if (private$txtq_count() < 1) {
         return(null_log)
       }
       private$parse_db(
@@ -185,7 +185,7 @@ R6_txtq <- R6::R6Class(
         )
       )
     },
-    parse_db = function(x){
+    parse_db = function(x) {
       colnames(x) <- c("title", "message", "time")
       x$title <- base64url::base64_urldecode(x$title)
       x$message <- base64url::base64_urldecode(x$message)
@@ -197,38 +197,38 @@ R6_txtq <- R6::R6Class(
     initialize = function(path){
       private$txtq_establish(path)
     },
-    path = function(){
+    path = function() {
       private$path_dir
     },
-    count = function(){
+    count = function() {
       private$txtq_exclusive(private$txtq_count())
     },
-    total = function(){
+    total = function() {
       private$txtq_exclusive(private$txtq_get_total())
     },
-    empty = function(){
+    empty = function() {
       private$txtq_exclusive(private$txtq_count()) < 1
     },
-    log = function(){
+    log = function() {
       private$txtq_exclusive(private$txtq_log())
     },
-    list = function(n = -1){
+    list = function(n = -1) {
       private$txtq_exclusive(private$txtq_list(n = n))
     },
-    pop = function(n = 1){
+    pop = function(n = 1) {
       private$txtq_exclusive(private$txtq_pop(n = n))
     },
-    push = function(title, message){
+    push = function(title, message) {
       private$txtq_exclusive(
         private$txtq_push(title = title, message = message))
     },
-    reset = function(){
+    reset = function() {
       private$txtq_exclusive(private$txtq_reset())
     },
-    clean = function(){
+    clean = function() {
       private$txtq_exclusive(private$txtq_clean())
     },
-    destroy = function(){
+    destroy = function() {
       unlink(private$path_dir, recursive = TRUE, force = TRUE)
     }
   )
@@ -242,7 +242,7 @@ null_log <- data.frame(
 )
 
 
-read_db_table <- function(dbfile, skip, n){
+read_db_table <- function(dbfile, skip, n) {
   t <- scan(
     dbfile,
     what = character(),
@@ -253,4 +253,8 @@ read_db_table <- function(dbfile, skip, n){
     na.strings = NULL,
     quiet = TRUE)
   as.data.frame(matrix(t, byrow = TRUE, ncol = 3), stringsAsFactors = FALSE)
+}
+
+nanotime <- function() {
+  format(Sys.time(), "%Y-%m-%d %H:%M:%OS9")
 }

@@ -1,3 +1,7 @@
+# Version 0.1.3
+
+- Increase the precision of time stamps (to the nanosecond).
+
 # Version 0.1.2
 
 - Improved read performance for long messages.
