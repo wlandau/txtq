@@ -1,6 +1,6 @@
 # Version 0.1.3
 
-- Increase the precision of time stamps (to the nanosecond).
+- Increase the precision of time stamps (to the nanosecond) and store them as characters (more compact).
 
 # Version 0.1.2
 

@@ -135,7 +135,7 @@ R6_txtq <- R6::R6Class(
       out <- data.frame(
         title = base64url::base64_urlencode(as.character(title)),
         message = base64url::base64_urlencode(as.character(message)),
-        time = base64url::base64_urlencode(as.character(nanotime())),
+        time = base64url::base64_urlencode(as.character(microtime())),
         stringsAsFactors = FALSE
       )
       new_total <- private$txtq_get_total() + nrow(out)
@@ -189,7 +189,7 @@ R6_txtq <- R6::R6Class(
       colnames(x) <- c("title", "message", "time")
       x$title <- base64url::base64_urldecode(x$title)
       x$message <- base64url::base64_urldecode(x$message)
-      x$time <- as.POSIXct(base64url::base64_urldecode(x$time))
+      x$time <- base64url::base64_urldecode(x$time)
       x
     }
   ),
@@ -255,6 +255,6 @@ read_db_table <- function(dbfile, skip, n) {
   as.data.frame(matrix(t, byrow = TRUE, ncol = 3), stringsAsFactors = FALSE)
 }
 
-nanotime <- function() {
-  format(Sys.time(), "%Y-%m-%d %H:%M:%OS9")
+microtime <- function() {
+  format(Sys.time(), "%Y-%m-%d %H:%M:%OS9 %z GMT")
 }
