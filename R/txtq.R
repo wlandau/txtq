@@ -141,10 +141,10 @@ R6_txtq <- R6::R6Class(
       out
     },
     txtq_push = function(title, message) {
-      time <- base64url::base64_urlencode(microtime())
+      time <- base64_urlencode(microtime())
       out <- paste(
-        base64url::base64_urlencode(as.character(title)),
-        base64url::base64_urlencode(as.character(message)),
+        base64_urlencode(as.character(title)),
+        base64_urlencode(as.character(message)),
         time = rep(time, length(title)),
         sep = "|"
       )
