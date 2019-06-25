@@ -132,23 +132,17 @@ R6_txtq <- R6::R6Class(
       out
     },
     txtq_push = function(title, message) {
-      out <- data.frame(
-        title = base64url::base64_urlencode(as.character(title)),
-        message = base64url::base64_urlencode(as.character(message)),
-        time = base64url::base64_urlencode(as.character(microtime())),
-        stringsAsFactors = FALSE
+      time <- base64url::base64_urlencode(microtime())
+      out <- paste(
+        base64url::base64_urlencode(as.character(title)),
+        base64url::base64_urlencode(as.character(message)),
+        time = rep(time, length(title)),
+        sep = "|"
       )
-      new_total <- private$txtq_get_total() + nrow(out)
+      new_total <- private$txtq_get_total() + length(out)
       private$txtq_set_total(new_total)
-      write.table(
-        out,
-        file = private$db_file,
-        append = TRUE,
-        row.names = FALSE,
-        col.names = FALSE,
-        sep = "|",
-        quote = FALSE
-      )
+      out <- paste(out, collapse = "\n")
+      write(x = out, file = private$db_file, append = TRUE)
     },
     txtq_reset = function() {
       unlink(private$db_file, force = TRUE)

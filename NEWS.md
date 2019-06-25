@@ -1,3 +1,7 @@
+# Version 0.1.4
+
+- Speed up `push()` by avoiding `data.frame()` and `write.table()`.
+
 # Version 0.1.3
 
 - Increase the precision of time stamps (to the microsecond) and store them as characters (more compact).
