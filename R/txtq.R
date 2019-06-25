@@ -120,6 +120,15 @@ R6_txtq <- R6::R6Class(
     txtq_set_total = function(n) {
       write(x = as.integer(n), file = private$total_file, append = FALSE)
     },
+    # Faster than txtq_get_total and txtq_set_total
+    # because it uses fewer connections:
+    txtq_inc_total = function(n) {
+      con <- file(private$total_file, "r+w")
+      on.exit(close(con))
+      old <- scan(con, quiet = TRUE, what = integer())
+      out <- old + as.integer(n)
+      write(x = out, file = con, append = FALSE)
+    },
     txtq_count = function() {
       as.integer(
         private$txtq_get_total() - private$txtq_get_head()
@@ -139,8 +148,7 @@ R6_txtq <- R6::R6Class(
         time = rep(time, length(title)),
         sep = "|"
       )
-      new_total <- private$txtq_get_total() + length(out)
-      private$txtq_set_total(new_total)
+      private$txtq_inc_total(length(out))
       out <- paste(out, collapse = "\n")
       write(x = out, file = private$db_file, append = TRUE)
     },

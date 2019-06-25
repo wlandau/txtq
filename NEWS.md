@@ -1,6 +1,6 @@
 # Version 0.1.4
 
-- Speed up `push()` by avoiding `data.frame()` and `write.table()`.
+- Speed up `push()` by avoiding `data.frame()`, avoiding `write.table()`, and reducing the number of file connections opened and closed.
 
 # Version 0.1.3
 
