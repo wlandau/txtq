@@ -1,6 +1,8 @@
 # Version 0.1.4
 
 - Speed up `push()` by avoiding `data.frame()`, `write.table()`, namespaced function calls, and superfluous file connections.
+- Remove dependency on `fs`.
+- Add `$validate()` to check if the files are corrupted. Does not check the whole database file.
 
 # Version 0.1.3
 
