@@ -18,7 +18,8 @@ and the examples in this help file for instructions.
 }
 \examples{
   path <- tempfile() # Define a path to your queue.
-  q <- txtq(path) # Create the queue.
+  q <- txtq(path) # Create a new queue or recover an existing one.
+  q$validate() # Check if the queue is corrupted.
   list.files(q$path()) # The queue lives in this folder.
   q$list() # You have not pushed any messages yet.
   # Let's say two parallel processes (A and B) are sharing this queue.
@@ -31,8 +32,8 @@ and the examples in this help file for instructions.
   )
   q$push(title = "Send back", message = "the sum.")
   # See your queued messages.
-  # The `time` is the POSIXct `Sys.time()` stamp
-  # of when the message was pushed.
+  # The `time` is a formatted character string from `Sys.time()`
+  # indicating when the message was pushed.
   q$list()
   q$count() # Number of messages in the queue.
   q$total() # Number of messages that were ever queued.

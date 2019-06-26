@@ -8,7 +8,8 @@
 #'   the messages.
 #' @examples
 #'   path <- tempfile() # Define a path to your queue.
-#'   q <- txtq(path) # Create the queue.
+#'   q <- txtq(path) # Create a new queue or recover an existing one.
+#'   q$validate() # Check if the queue is corrupted.
 #'   list.files(q$path()) # The queue lives in this folder.
 #'   q$list() # You have not pushed any messages yet.
 #'   # Let's say two parallel processes (A and B) are sharing this queue.
@@ -21,8 +22,8 @@
 #'   )
 #'   q$push(title = "Send back", message = "the sum.")
 #'   # See your queued messages.
-#'   # The `time` is the POSIXct `Sys.time()` stamp
-#'   # of when the message was pushed.
+#'   # The `time` is a formatted character string from `Sys.time()`
+#'   # indicating when the message was pushed.
 #'   q$list()
 #'   q$count() # Number of messages in the queue.
 #'   q$total() # Number of messages that were ever queued.
@@ -88,13 +89,14 @@ R6_txtq <- R6::R6Class(
     lock_file = character(0),
     total_file = character(0),
     txtq_establish = function(path) {
-      private$path_dir <- fs::dir_create(path)
+      dir_create(path)
+      private$path_dir <- path
       private$db_file <- file.path(private$path_dir, "db")
       private$head_file <- file.path(private$path_dir, "head")
       private$total_file <- file.path(private$path_dir, "total")
       private$lock_file <- file.path(private$path_dir, "lock")
       private$txtq_exclusive({
-        fs::file_create(private$db_file)
+        file_create(private$db_file)
         if (!file.exists(private$head_file)) {
           private$txtq_set_head(0)
         }
@@ -102,6 +104,7 @@ R6_txtq <- R6::R6Class(
           private$txtq_set_total(0)
         }
       })
+      private$txtq_validate()
     },
     txtq_exclusive = function(code) {
       on.exit(filelock::unlock(lock))
@@ -154,7 +157,7 @@ R6_txtq <- R6::R6Class(
     },
     txtq_reset = function() {
       unlink(private$db_file, force = TRUE)
-      fs::file_create(private$db_file)
+      file_create(private$db_file)
       private$txtq_set_head(0)
       private$txtq_set_total(0)
     },
@@ -167,32 +170,27 @@ R6_txtq <- R6::R6Class(
       if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
         return(null_log)
       }
-      private$parse_db(
-        read_db_table(
-          dbfile = private$db_file,
-          skip = 0,
-          n = -1
-        )
+      read_db_table(
+        dbfile = private$db_file,
+        skip = 0,
+        n = -1
       )
     },
     txtq_list = function(n){
       if (private$txtq_count() < 1) {
         return(null_log)
       }
-      private$parse_db(
-        read_db_table(
-          dbfile = private$db_file,
-          skip = private$txtq_get_head(),
-          n = n
-        )
+      read_db_table(
+        dbfile = private$db_file,
+        skip = private$txtq_get_head(),
+        n = n
       )
     },
-    parse_db = function(x) {
-      colnames(x) <- c("title", "message", "time")
-      x$title <- base64url::base64_urldecode(x$title)
-      x$message <- base64url::base64_urldecode(x$message)
-      x$time <- base64url::base64_urldecode(x$time)
-      x
+    txtq_validate = function() {
+      assert_dir(private$path_dir)
+      assert_file(private$db_file)
+      assert_file_scalar(private$head_file)
+      assert_file_scalar(private$total_file)
     }
   ),
   public = list(
@@ -232,31 +230,9 @@ R6_txtq <- R6::R6Class(
     },
     destroy = function() {
       unlink(private$path_dir, recursive = TRUE, force = TRUE)
+    },
+    validate = function() {
+      private$txtq_validate()
     }
   )
 )
-
-null_log <- data.frame(
-  title = character(0),
-  message = character(0),
-  time = as.POSIXct(character(0)),
-  stringsAsFactors = FALSE
-)
-
-
-read_db_table <- function(dbfile, skip, n) {
-  t <- scan(
-    dbfile,
-    what = character(),
-    sep = "|",
-    skip = skip,
-    nmax = 3 * n,
-    quote = "",
-    na.strings = NULL,
-    quiet = TRUE)
-  as.data.frame(matrix(t, byrow = TRUE, ncol = 3), stringsAsFactors = FALSE)
-}
-
-microtime <- function() {
-  format(Sys.time(), "%Y-%m-%d %H:%M:%OS9 %z GMT")
-}

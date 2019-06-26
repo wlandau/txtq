@@ -28,10 +28,11 @@ The `txtq` package helps parallel R processes send messages to each other. Let's
 ```{r setup}
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-q <- txtq(path) # Create the queue.
+q <- txtq(path) # Create a new queue or recover an existing one.
+q$validate() # Check if the queue is corrupted.
 ```
 
-The queue uses text files to keep track of your data. In the data frame of messages, the `time` column is the POSIXct `Sys.time()` stamp of when each message was pushed.
+The queue uses text files to keep track of your data. 
 
 ```{r files}
 list.files(q$path()) # The queue's underlying text files live in this folder.

@@ -34,11 +34,10 @@ Authors@R: c(
 Imports:
   base64url,
   filelock,
-  fs,
   R6
 Suggests:
-  parallel,
-  testthat
+    parallel,
+    testthat (>= 2.1.0)
 Encoding: UTF-8
 Language: en-US
 RoxygenNote: 6.1.1
