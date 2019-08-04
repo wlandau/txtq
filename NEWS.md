@@ -1,3 +1,7 @@
+# Version 0.1.4.9000
+
+- Allow `txtq`s to be created in subdirectories.
+
 # Version 0.1.4
 
 - Speed up `push()` by avoiding `data.frame()`, `write.table()`, namespaced function calls, and superfluous file connections.

@@ -1,6 +1,6 @@
 dir_create <- function(x) {
   if (!file.exists(x)) {
-    dir.create(x)
+    dir.create(x, showWarnings = FALSE, recursive = TRUE)
   }
   if (!dir.exists(x)) {
     stop("txtq cannot create directory at ", shQuote(x), call. = FALSE)
