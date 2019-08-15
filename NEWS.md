@@ -1,4 +1,4 @@
-# Version 0.1.4.9000
+# Version 0.1.5
 
 - Allow `txtq`s to be created in subdirectories.
 
