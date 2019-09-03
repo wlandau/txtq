@@ -151,9 +151,11 @@ R6_txtq <- R6::R6Class(
         time = rep(time, length(title)),
         sep = "|"
       )
-      private$txtq_inc_total(length(out))
-      out <- paste(out, collapse = "\n")
-      write(x = out, file = private$db_file, append = TRUE)
+      if (length(out) > 0) {
+        private$txtq_inc_total(length(out))
+        out <- paste(out, collapse = "\n")
+        write(x = out, file = private$db_file, append = TRUE)
+      }
     },
     txtq_reset = function() {
       unlink(private$db_file, force = TRUE)
