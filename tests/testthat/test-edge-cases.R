@@ -1,5 +1,12 @@
 context("edge cases")
 
+test_that("subdirectories (#13)", {
+  f <- file.path(tempfile(), "x", "y", "z")
+  q <- txtq(f)
+  q$push("x", "y")
+  expect_equal(q$pop()$title, "x")
+})
+
 test_that("do not push messages of length 0 (#15)", {
   q <- txtq(tempfile())
   q$push(title = character(0), message = character(0))

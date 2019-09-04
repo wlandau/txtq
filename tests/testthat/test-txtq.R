@@ -104,10 +104,3 @@ test_that("clean()", {
     expect_equal(q$total(), 3)
   }
 })
-
-test_that("subdirectories (#13)", {
-  f <- file.path(tempfile(), "x", "y", "z")
-  q <- txtq(f)
-  q$push("x", "y")
-  expect_equal(q$pop()$title, "x")
-})
