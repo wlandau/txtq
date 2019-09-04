@@ -1,3 +1,7 @@
+# Version 0.1.5.9000
+
+- Fix indexing issue when pushing message of length 0 (#15, @daroczig)
+
 # Version 0.1.5
 
 - Allow `txtq`s to be created in subdirectories.
