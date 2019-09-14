@@ -1,6 +1,6 @@
 # Version 0.1.6
 
-- Fix indexing issue when pushing message of length 0 (#15, @daroczig)
+- Fix indexing issue when pushing message of length 0 (#15, @daroczig).
 
 # Version 0.1.5
 
