@@ -1,3 +1,9 @@
+test_that("valid txtq validates fine", {
+  q <- txtq(tempfile())
+  q$push(1, 2)
+  q$validate()
+})
+
 test_that("cannot create dir because a file is already there", {
   path <- tempfile()
   file.create(path)
