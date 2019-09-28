@@ -137,6 +137,29 @@ file.exists(q$path())
 
 This entire time, the queue was locked when either process was trying to create, access, or modify it. That way, the results stay correct even when multiple processes try to read or change the data at the same time.
 
+## Importing
+
+You can import a `txtq` into another `txtq`. The unpopped messages are grouped together and sorted by timestamp. Same goes for the popped messages.
+
+```{r import}
+q_from <- txtq(tempfile())
+q_to <- txtq(tempfile())
+q_from$push(title = "from", message = "popped")
+q_from$push(title = "from", message = "unpopped")
+q_to$push(title = "to", message = "popped")
+q_to$push(title = "to", message = "unpopped")
+
+q_from$pop()
+
+q_to$pop()
+
+q_to$import(q_from)
+
+q_to$list()
+
+q_to$log()
+```
+
 # Similar work
 
 ## liteq

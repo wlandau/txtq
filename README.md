@@ -1,29 +1,21 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
 
-[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq)
-[![Travis build
-status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq)
-[![AppVeyor build
-status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq)
-[![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
+txtq - a small message queue for parallel processes
+===================================================
 
-# txtq - a small message queue for parallel processes
-
-The `txtq` package helps parallel R processes send messages to each
-other. Let’s say Process A and Process B are working on a parallel task
-together. First, both processes grab the queue.
+The `txtq` package helps parallel R processes send messages to each other. Let's say Process A and Process B are working on a parallel task together. First, both processes grab the queue.
 
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/var/folders/k3/q1f45fsn4_13jbn0742d4zj40000gn/T//RtmpjfQ5pT/file712b442dbb25"
+#> [1] "/tmp/RtmpU64E8Z/file26154f95b553"
 q <- txtq(path) # Create a new queue or recover an existing one.
 q$validate() # Check if the queue is corrupted.
 ```
 
-The queue uses text files to keep track of your
-data.
+The queue uses text files to keep track of your data.
 
 ``` r
 list.files(q$path()) # The queue's underlying text files live in this folder.
@@ -49,13 +41,13 @@ You can inspect the contents of the queue from either process.
 ``` r
 q$list()
 #>       title    message                                 time
-#> 1     Hello process B. 2019-06-26 09:45:47.135519 -0400 GMT
-#> 2 Calculate    sqrt(4) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 3 Calculate   sqrt(16) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 4 Send back   the sum. 2019-06-26 09:45:47.147176 -0400 GMT
+#> 1     Hello process B. 2019-09-28 19:50:22.042710 -0400 GMT
+#> 2 Calculate    sqrt(4) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 3 Calculate   sqrt(16) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 4 Send back   the sum. 2019-09-28 19:50:22.044786 -0400 GMT
 q$list(1) # You can specify the number of messages to list.
 #>   title    message                                 time
-#> 1 Hello process B. 2019-06-26 09:45:47.135519 -0400 GMT
+#> 1 Hello process B. 2019-09-28 19:50:22.042710 -0400 GMT
 q$count()
 #> [1] 4
 ```
@@ -65,8 +57,8 @@ As Process A is pushing the messages, Process B can consume them.
 ``` r
 q$pop(2) # If you pass 2, you are assuming the queue has >=2 messages.
 #>       title    message                                 time
-#> 1     Hello process B. 2019-06-26 09:45:47.135519 -0400 GMT
-#> 2 Calculate    sqrt(4) 2019-06-26 09:45:47.142663 -0400 GMT
+#> 1     Hello process B. 2019-09-28 19:50:22.042710 -0400 GMT
+#> 2 Calculate    sqrt(4) 2019-09-28 19:50:22.043907 -0400 GMT
 ```
 
 Those popped messages are not technically in the queue any longer.
@@ -74,8 +66,8 @@ Those popped messages are not technically in the queue any longer.
 ``` r
 q$list()
 #>       title  message                                 time
-#> 1 Calculate sqrt(16) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 2 Send back the sum. 2019-06-26 09:45:47.147176 -0400 GMT
+#> 1 Calculate sqrt(16) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 2 Send back the sum. 2019-09-28 19:50:22.044786 -0400 GMT
 q$count() # Number of messages technically in the queue.
 #> [1] 2
 ```
@@ -85,27 +77,26 @@ But we still have a full log of all the messages that were ever sent.
 ``` r
 q$log()
 #>       title    message                                 time
-#> 1     Hello process B. 2019-06-26 09:45:47.135519 -0400 GMT
-#> 2 Calculate    sqrt(4) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 3 Calculate   sqrt(16) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 4 Send back   the sum. 2019-06-26 09:45:47.147176 -0400 GMT
+#> 1     Hello process B. 2019-09-28 19:50:22.042710 -0400 GMT
+#> 2 Calculate    sqrt(4) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 3 Calculate   sqrt(16) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 4 Send back   the sum. 2019-09-28 19:50:22.044786 -0400 GMT
 q$total() # Number of messages that were ever queued.
 #> [1] 4
 ```
 
-Let’s let Process B get the rest of the instructions.
+Let's let Process B get the rest of the instructions.
 
 ``` r
 q$pop() # q$pop() with no arguments just pops one message.
 #>       title  message                                 time
-#> 1 Calculate sqrt(16) 2019-06-26 09:45:47.142663 -0400 GMT
+#> 1 Calculate sqrt(16) 2019-09-28 19:50:22.043907 -0400 GMT
 q$pop() # Call q$pop(-1) to pop all the messages at once.
 #>       title  message                                 time
-#> 1 Send back the sum. 2019-06-26 09:45:47.147176 -0400 GMT
+#> 1 Send back the sum. 2019-09-28 19:50:22.044786 -0400 GMT
 ```
 
-Now let’s say Process B follows the instructions in the messages. The
-last step is to send the results back to Process A.
+Now let's say Process B follows the instructions in the messages. The last step is to send the results back to Process A.
 
 ``` r
 q$push(title = "Results", message = as.character(sqrt(4) + sqrt(16)))
@@ -116,11 +107,10 @@ Process A can now see the results.
 ``` r
 q$pop()
 #>     title message                                 time
-#> 1 Results       6 2019-06-26 09:45:47.191945 -0400 GMT
+#> 1 Results       6 2019-09-28 19:50:22.079732 -0400 GMT
 ```
 
-The queue can grow large if you are not careful. Popped messages are
-kept in the database file.
+The queue can grow large if you are not careful. Popped messages are kept in the database file.
 
 ``` r
 q$push(title = "not", message = "popped")
@@ -130,19 +120,18 @@ q$total()
 #> [1] 6
 q$list()
 #>   title message                                 time
-#> 1   not  popped 2019-06-26 09:45:47.203210 -0400 GMT
+#> 1   not  popped 2019-09-28 19:50:22.087946 -0400 GMT
 q$log()
 #>       title    message                                 time
-#> 1     Hello process B. 2019-06-26 09:45:47.135519 -0400 GMT
-#> 2 Calculate    sqrt(4) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 3 Calculate   sqrt(16) 2019-06-26 09:45:47.142663 -0400 GMT
-#> 4 Send back   the sum. 2019-06-26 09:45:47.147176 -0400 GMT
-#> 5   Results          6 2019-06-26 09:45:47.191945 -0400 GMT
-#> 6       not     popped 2019-06-26 09:45:47.203210 -0400 GMT
+#> 1     Hello process B. 2019-09-28 19:50:22.042710 -0400 GMT
+#> 2 Calculate    sqrt(4) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 3 Calculate   sqrt(16) 2019-09-28 19:50:22.043907 -0400 GMT
+#> 4 Send back   the sum. 2019-09-28 19:50:22.044786 -0400 GMT
+#> 5   Results          6 2019-09-28 19:50:22.079732 -0400 GMT
+#> 6       not     popped 2019-09-28 19:50:22.087946 -0400 GMT
 ```
 
-To keep the database file from getting too big, you can clean out the
-popped messages.
+To keep the database file from getting too big, you can clean out the popped messages.
 
 ``` r
 q$clean()
@@ -152,10 +141,10 @@ q$total()
 #> [1] 1
 q$list()
 #>   title message                                 time
-#> 1   not  popped 2019-06-26 09:45:47.219796 -0400 GMT
+#> 1   not  popped 2019-09-28 19:50:22.097681 -0400 GMT
 q$log()
 #>   title message                                 time
-#> 1   not  popped 2019-06-26 09:45:47.219796 -0400 GMT
+#> 1   not  popped 2019-09-28 19:50:22.097681 -0400 GMT
 ```
 
 You can also reset the queue to remove all messages, popped or not.
@@ -182,39 +171,59 @@ file.exists(q$path())
 #> [1] FALSE
 ```
 
-This entire time, the queue was locked when either process was trying to
-create, access, or modify it. That way, the results stay correct even
-when multiple processes try to read or change the data at the same time.
+This entire time, the queue was locked when either process was trying to create, access, or modify it. That way, the results stay correct even when multiple processes try to read or change the data at the same time.
 
-# Similar work
+Importing
+---------
 
-## liteq
+You can import a `txtq` into another `txtq`. The unpopped messages are grouped together and sorted by timestamp. Same goes for the popped messages.
 
-[Gábor Csárdi](https://github.com/gaborcsardi)’s
-[`liteq`](https://github.com/r-lib/liteq) package offers essentially the
-same functionality implemented with SQLite. It has a some additional
-features, such as the ability to detect crashed workers and re-queue
-failed messages, but it was in an early stage of development at the time
-`txtq` was released.
+``` r
+q_from <- txtq(tempfile())
+q_to <- txtq(tempfile())
+q_from$push(title = "from", message = "popped")
+q_from$push(title = "from", message = "unpopped")
+q_to$push(title = "to", message = "popped")
+q_to$push(title = "to", message = "unpopped")
 
-## Other message queues
+q_from$pop()
+#>   title message                                 time
+#> 1  from  popped 2019-09-28 19:50:22.129259 -0400 GMT
 
-There is a [plethora of message queues](http://queues.io/) beyond R,
-most notably [ZeroMQ](http://zeromq.org) and
-[RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen
-Ooms](http://github.com/jeroen) and [Whit
-Armstrong](https://github.com/armstrtw) maintain
-[`rzmq`](https://github.com/ropensci/rzmq), a package to work with
-[ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has
-advantages.
+q_to$pop()
+#>   title message                                 time
+#> 1    to  popped 2019-09-28 19:50:22.130889 -0400 GMT
 
-1.  The `txtq` user interface is friendly, and its internals are simple.
-    No prior knowledge of sockets or message-passing is required.
-2.  `txtq` is lightweight, R-focused, and easy to install. It only
-    depends on R and a few packages on
-    [CRAN](https://cran.r-project.org).
+q_to$import(q_from)
+
+q_to$list()
+#>   title  message                                 time
+#> 1  from unpopped 2019-09-28 19:50:22.136691 -0400 GMT
+#> 2    to unpopped 2019-09-28 19:50:22.136691 -0400 GMT
+
+q_to$log()
+#>   title  message                                 time
+#> 1  from   popped 2019-09-28 19:50:22.136691 -0400 GMT
+#> 2    to   popped 2019-09-28 19:50:22.136691 -0400 GMT
+#> 3  from unpopped 2019-09-28 19:50:22.136691 -0400 GMT
+#> 4    to unpopped 2019-09-28 19:50:22.136691 -0400 GMT
+```
+
+Similar work
+============
+
+liteq
+-----
+
+[Gábor Csárdi](https://github.com/gaborcsardi)'s [`liteq`](https://github.com/r-lib/liteq) package offers essentially the same functionality implemented with SQLite. It has a some additional features, such as the ability to detect crashed workers and re-queue failed messages, but it was in an early stage of development at the time `txtq` was released.
+
+Other message queues
+--------------------
+
+There is a [plethora of message queues](http://queues.io/) beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has advantages.
+
+1.  The `txtq` user interface is friendly, and its internals are simple. No prior knowledge of sockets or message-passing is required.
+2.  `txtq` is lightweight, R-focused, and easy to install. It only depends on R and a few packages on [CRAN](https://cran.r-project.org).
 3.  Because `txtq` it is file-based,
-      - The queue persists even if your work crashes, so you can
-        diagnose failures with `q$log()` and `q$list()`.
-      - Job monitoring is easy. Just open another R session and call
-        `q$list()` while your work is running.
+    -   The queue persists even if your work crashes, so you can diagnose failures with `q$log()` and `q$list()`.
+    -   Job monitoring is easy. Just open another R session and call `q$list()` while your work is running.

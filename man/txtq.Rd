@@ -82,4 +82,20 @@ and the examples in this help file for instructions.
   # This whole time, the queue was locked when either Process A
   # or Process B accessed it. That way, the data stays correct
   # no matter who is accessing/modifying the queue and when.
+  #
+  # You can import a `txtq` into another `txtq`.
+  # The unpopped messages are grouped together
+  # and sorted by timestamp.
+  # Same goes for the popped messages.
+  q_from <- txtq(tempfile())
+  q_to <- txtq(tempfile())
+  q_from$push(title = "from", message = "popped")
+  q_from$push(title = "from", message = "unpopped")
+  q_to$push(title = "to", message = "popped")
+  q_to$push(title = "to", message = "unpopped")
+  q_from$pop()
+  q_to$pop()
+  q_to$import(q_from)
+  q_to$list()
+  q_to$log()
 }
