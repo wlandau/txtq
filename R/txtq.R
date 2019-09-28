@@ -179,7 +179,7 @@ R6_txtq <- R6::R6Class(
       )
     },
     txtq_list = function(n){
-      if (private$txtq_count() < 1) {
+      if (n == 0L || private$txtq_count() < 1L) {
         return(null_log)
       }
       read_db_table(
@@ -219,6 +219,7 @@ R6_txtq <- R6::R6Class(
       # nolint end
       new_log <- rbind(new_popped, new_unpopped)
       unlink(private$db_file)
+      file_create(private$db_file)
       private$txtq_push(title = new_log$title, message = new_log$message)
       new_head <- this_head + ext_total - ext_count
       private$txtq_set_head(new_head)
