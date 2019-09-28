@@ -196,23 +196,32 @@ R6_txtq <- R6::R6Class(
     },
     txtq_import = function(queue) {
       stopifnot(inherits(queue, "R6_txtq"))
+      ext_log <- queue$log()
       ext_total <- queue$total()
       ext_count <- queue$count()
       ext_head <- ext_total - ext_count
-      ext_log <- queue$log()
+      ext_popped <- seq_len(ext_total) <= ext_head
+      this_log <- private$txtq_log()
       this_total <- private$txtq_get_total()
       this_head <- private$txtq_get_head()
-      this_count <- this_total - this_head
-      this_log <- private$txtq_log()
-      new_total <- ext_total + this_total
-      new_head <- ext_head + this_head
-      new_count <- ext_count + this_count
-      new_list <- rbind(
-        
+      this_popped <- seq_len(this_total) <= this_head
+      # nolint start
+      new_popped <- rbind(
+        ext_log[ext_popped,, drop = FALSE],
+        this_log[this_popped,, drop = FALSE]
       )
-      browser()
-      
-      
+      new_unpopped <- rbind(
+        ext_log[!ext_popped,, drop = FALSE],
+        this_log[!this_popped,, drop = FALSE]
+      )
+      new_popped <- new_popped[order(new_popped$time),, drop = FALSE]
+      new_unpopped <- new_unpopped[order(new_unpopped$time),, drop = FALSE]
+      # nolint end
+      new_log <- rbind(new_popped, new_unpopped)
+      unlink(private$db_file)
+      private$txtq_push(title = new_log$title, message = new_log$message)
+      new_head <- this_head + ext_total - ext_count
+      private$txtq_set_head(new_head)
     }
   ),
   public = list(
@@ -244,21 +253,27 @@ R6_txtq <- R6::R6Class(
       private$txtq_exclusive(
         private$txtq_push(title = title, message = message)
       )
+      invisible()
     },
     reset = function() {
       private$txtq_exclusive(private$txtq_reset())
+      invisible()
     },
     clean = function() {
       private$txtq_exclusive(private$txtq_clean())
+      invisible()
     },
     destroy = function() {
       unlink(private$path_dir, recursive = TRUE, force = TRUE)
+      invisible()
     },
     validate = function() {
       private$txtq_validate()
+      invisible()
     },
     import = function(queue) {
       private$txtq_exclusive(private$txtq_import(queue = queue))
+      invisible()
     }
   )
 )
