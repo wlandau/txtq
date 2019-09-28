@@ -1,5 +1,3 @@
-context("validate")
-
 test_that("cannot create dir because a file is already there", {
   path <- tempfile()
   file.create(path)

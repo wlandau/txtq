@@ -1,5 +1,3 @@
-context("long")
-
 test_that("txtq is thread safe", {
   f <- function(process, in_, out_){
     q <- txtq::txtq(in_)

@@ -1,5 +1,3 @@
-context("edge cases")
-
 test_that("subdirectories (#13)", {
   f <- file.path(tempfile(), "x", "y", "z")
   q <- txtq(f)

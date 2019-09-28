@@ -1,5 +1,3 @@
-context("txtq")
-
 test_that("core txtq API works", {
   q <- txtq(tempfile())
   expect_true(file.exists(q$path()))

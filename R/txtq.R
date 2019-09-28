@@ -193,6 +193,26 @@ R6_txtq <- R6::R6Class(
       assert_file(private$db_file)
       assert_file_scalar(private$head_file)
       assert_file_scalar(private$total_file)
+    },
+    txtq_import = function(queue) {
+      stopifnot(inherits(queue, "R6_txtq"))
+      ext_total <- queue$total()
+      ext_count <- queue$count()
+      ext_head <- ext_total - ext_count
+      ext_log <- queue$log()
+      this_total <- private$txtq_get_total()
+      this_head <- private$txtq_get_head()
+      this_count <- this_total - this_head
+      this_log <- private$txtq_log()
+      new_total <- ext_total + this_total
+      new_head <- ext_head + this_head
+      new_count <- ext_count + this_count
+      new_list <- rbind(
+        
+      )
+      browser()
+      
+      
     }
   ),
   public = list(
@@ -222,7 +242,8 @@ R6_txtq <- R6::R6Class(
     },
     push = function(title, message) {
       private$txtq_exclusive(
-        private$txtq_push(title = title, message = message))
+        private$txtq_push(title = title, message = message)
+      )
     },
     reset = function() {
       private$txtq_exclusive(private$txtq_reset())
@@ -235,6 +256,9 @@ R6_txtq <- R6::R6Class(
     },
     validate = function() {
       private$txtq_validate()
+    },
+    import = function(queue) {
+      private$txtq_exclusive(private$txtq_import(queue = queue))
     }
   )
 )
