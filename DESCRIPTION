@@ -36,8 +36,9 @@ Imports:
   filelock,
   R6
 Suggests:
-    parallel,
-    testthat (>= 2.1.0)
+  parallel,
+  purrr,
+  testthat (>= 2.1.0)
 Encoding: UTF-8
 Language: en-US
 RoxygenNote: 6.1.1
