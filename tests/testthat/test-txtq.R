@@ -79,7 +79,7 @@ test_that("reset()", {
 })
 
 test_that("clean()", {
-  df <- function(index){
+  df <- function(index) {
     data.frame(
       title = as.character(index),
       message = as.character(letters[index]),
@@ -94,7 +94,7 @@ test_that("clean()", {
   expect_equal(q$log()[, cols], df(index = 1:5))
   expect_equal(q$count(), 3)
   expect_equal(q$total(), 5)
-  for (i in 1:2){
+  for (i in 1:2) {
     q$clean()
     expect_equal(q$list()[, cols], df(index = 3:5))
     expect_equal(q$log()[, cols], df(index = 3:5))

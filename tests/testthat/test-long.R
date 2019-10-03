@@ -1,17 +1,17 @@
 test_that("txtq is thread safe", {
-  f <- function(process, in_, out_){
+  f <- function(process, in_, out_) {
     q <- txtq::txtq(in_)
-    if (identical(process, "A")){
-      while (nrow(q$log()) < 1000 || !q$empty()){
+    if (identical(process, "A")) {
+      while (nrow(q$log()) < 1000 || !q$empty()) {
         i <- 1
         p <- txtq::txtq(out_)
         msg <- q$pop()
-        if (nrow(msg) > 0){
+        if (nrow(msg) > 0) {
           p$push(msg$title, msg$message)
         }
       }
     } else {
-      for (i in seq_len(1000)){
+      for (i in seq_len(1000)) {
         q$push(title = as.character(i), message = as.character(i + 1))
       }
     }

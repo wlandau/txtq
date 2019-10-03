@@ -185,7 +185,7 @@ R6_txtq <- R6::R6Class(
       private$txtq_push(title = keep$title, message = keep$message)
     },
     txtq_log = function() {
-      if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1){
+      if (length(scan(private$db_file, quiet = TRUE, what = character())) < 1) {
         return(null_log)
       }
       read_db_table(
@@ -194,7 +194,7 @@ R6_txtq <- R6::R6Class(
         n = -1
       )
     },
-    txtq_list = function(n){
+    txtq_list = function(n) {
       if (n == 0L || private$txtq_count() < 1L) {
         return(null_log)
       }
@@ -242,7 +242,7 @@ R6_txtq <- R6::R6Class(
     }
   ),
   public = list(
-    initialize = function(path){
+    initialize = function(path) {
       private$txtq_establish(path)
     },
     path = function() {
