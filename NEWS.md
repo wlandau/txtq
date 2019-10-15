@@ -1,4 +1,4 @@
-# Version 0.1.6.9002
+# Version 0.2.0
 
 - Add the `import()` method.
 - Bugfix: make `pop(0)` and `list(0)` return no messages.
