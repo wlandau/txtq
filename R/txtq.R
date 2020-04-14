@@ -124,6 +124,7 @@ R6_txtq <- R6::R6Class(
     },
     txtq_exclusive = function(code) {
       on.exit(filelock::unlock(lock))
+      on.exit(unlink(private$lock_file), add = TRUE)
       lock <- filelock::lock(private$lock_file)
       force(code)
     },
@@ -242,52 +243,72 @@ R6_txtq <- R6::R6Class(
     }
   ),
   public = list(
+    #' @description Initialize a txtq.
+    #' @param path Path to the txtq.
     initialize = function(path) {
       private$txtq_establish(path)
     },
+    #' @description Get the txtq path.
     path = function() {
       private$path_dir
     },
+    #' @description Get the number of messages in the queue.
     count = function() {
       private$txtq_exclusive(private$txtq_count())
     },
+    #' @description Get the number of messages in the database.
     total = function() {
       private$txtq_exclusive(private$txtq_get_total())
     },
+    #' @description Detect whether the txtq is empty.
     empty = function() {
       private$txtq_exclusive(private$txtq_count()) < 1
     },
+    #' @description List the whole database.
     log = function() {
       private$txtq_exclusive(private$txtq_log())
     },
+    #' @description List messages.
+    #' @param n Number of messages.
     list = function(n = -1) {
       private$txtq_exclusive(private$txtq_list(n = n))
     },
+    #' @description Pop messages.
+    #' @param n Number of messages.
     pop = function(n = 1) {
       private$txtq_exclusive(private$txtq_pop(n = n))
     },
+    #' @description Push messages.
+    #' @param title Titles of the messages.
+    #' @param message Contents of the messages.
     push = function(title, message) {
       private$txtq_exclusive(
         private$txtq_push(title = title, message = message)
       )
       invisible()
     },
+    #' @description Reset the txtq.
     reset = function() {
       private$txtq_exclusive(private$txtq_reset())
       invisible()
     },
+    #' @description Clean the txtq.
     clean = function() {
       private$txtq_exclusive(private$txtq_clean())
       invisible()
     },
+    #' @description Destroy the txtq.
     destroy = function() {
       unlink(private$path_dir, recursive = TRUE, force = TRUE)
       invisible()
     },
+    #' @description Validate the txtq.
     validate = function() {
       private$txtq_validate()
       invisible()
     },
+    #' @description Import another txtq.
+    #' @param queue External txtq to import.
     import = function(queue) {
       private$txtq_exclusive(private$txtq_import(queue = queue))
       invisible()

@@ -1,5 +1,7 @@
 # Version 0.2.0.9000
 
+- Remove lockfile on exit.
+- Add R6 docstrings.
 
 # Version 0.2.0
 

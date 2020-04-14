@@ -41,5 +41,5 @@ Suggests:
   testthat (>= 2.1.0)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 6.1.1
+RoxygenNote: 7.1.0
 Roxygen: list(markdown = TRUE)

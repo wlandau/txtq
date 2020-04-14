@@ -3,7 +3,7 @@
 \docType{package}
 \name{txtq-package}
 \alias{txtq-package}
-\title{The txtq package is a small message queue for R.}
+\title{txtq-package}
 \description{
 The txtq package is a small message queue for R.
 }
