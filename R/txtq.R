@@ -123,9 +123,11 @@ R6_txtq <- R6::R6Class(
       private$txtq_validate()
     },
     txtq_exclusive = function(code) {
-      on.exit(filelock::unlock(lock))
-      on.exit(unlink(private$lock_file), add = TRUE)
       lock <- filelock::lock(private$lock_file)
+      on.exit({
+        filelock::unlock(lock)
+        unlink(private$lock_file)
+      })
       force(code)
     },
     txtq_get_head = function() {
