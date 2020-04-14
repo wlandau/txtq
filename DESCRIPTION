@@ -9,7 +9,7 @@ Description: This queue is a data structure that lets
   log of all the messages ever pushed. File locking
   preserves the integrity of the data even when
   multiple processes access the queue simultaneously.
-Version: 0.2.1
+Version: 0.2.0.9000
 License: MIT + file LICENSE
 URL: https://github.com/wlandau/txtq
 BugReports: https://github.com/wlandau/txtq/issues

@@ -1,7 +1,7 @@
-# Version 0.2.1
+# Version 0.2.0.9000
 
-- Remove lockfile on exit.
 - Add R6 docstrings.
+- Create lockfile in advance outside `filelock`.
 
 # Version 0.2.0
 
