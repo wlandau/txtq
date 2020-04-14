@@ -119,15 +119,13 @@ R6_txtq <- R6::R6Class(
         if (!file.exists(private$total_file)) {
           private$txtq_set_total(0)
         }
+        file_create(private$lock_file)
       })
       private$txtq_validate()
     },
     txtq_exclusive = function(code) {
+      on.exit(filelock::unlock(lock))
       lock <- filelock::lock(private$lock_file)
-      on.exit({
-        filelock::unlock(lock)
-        unlink(private$lock_file)
-      })
       force(code)
     },
     txtq_get_head = function() {
