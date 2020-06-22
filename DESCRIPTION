@@ -33,7 +33,7 @@ Authors@R: c(
   ))
 Imports:
   base64url,
-  filelock,
+  filelock (>= 1.0.2),
   R6
 Suggests:
   parallel,

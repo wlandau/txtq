@@ -119,7 +119,6 @@ R6_txtq <- R6::R6Class(
         if (!file.exists(private$total_file)) {
           private$txtq_set_total(0)
         }
-        file_create(private$lock_file)
       })
       private$txtq_validate()
     },
