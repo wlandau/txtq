@@ -35,7 +35,7 @@ txtq
 \subsection{Method \code{new()}}{
 Initialize a txtq.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6_txtq$new(path)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{R6_txtq$new(path, use_lock_file)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{

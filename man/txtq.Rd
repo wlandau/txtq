@@ -4,12 +4,17 @@
 \alias{txtq}
 \title{Create a message queue.}
 \usage{
-txtq(path)
+txtq(path, use_lock_file = TRUE)
 }
 \arguments{
 \item{path}{Character string giving the file path of the queue.
 The \code{txtq()} function creates a folder at this path to store
 the messages.}
+
+\item{use_lock_file}{Logical, whether to use a lock file
+for blocking operations. Should only be \code{FALSE} in specialized
+use cases with no parallel computing (for example, when a
+\code{txtq} is used as a database and accessed by only one process.)}
 }
 \description{
 See the README at

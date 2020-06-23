@@ -6,6 +6,10 @@
 #' @param path Character string giving the file path of the queue.
 #'   The `txtq()` function creates a folder at this path to store
 #'   the messages.
+#' @param use_lock_file Logical, whether to use a lock file
+#'   for blocking operations. Should only be `FALSE` in specialized
+#'   use cases with no parallel computing (for example, when a
+#'   `txtq` is used as a database and accessed by only one process.)
 #' @examples
 #'   path <- tempfile() # Define a path to your queue.
 #'   q <- txtq(path) # Create a new queue or recover an existing one.
@@ -88,8 +92,8 @@
 #'   q_to$import(q_from)
 #'   q_to$list()
 #'   q_to$log()
-txtq <- function(path) {
-  R6_txtq$new(path = path)
+txtq <- function(path, use_lock_file = TRUE) {
+  R6_txtq$new(path = path, use_lock_file = use_lock_file)
 }
 
 #' @title R6 class for `txtq` objects
@@ -104,13 +108,15 @@ R6_txtq <- R6::R6Class(
     head_file = character(0),
     lock_file = character(0),
     total_file = character(0),
-    txtq_establish = function(path) {
+    use_lock_file = logical(0),
+    txtq_establish = function(path, use_lock_file) {
       dir_create(path)
       private$path_dir <- path
       private$db_file <- file.path(private$path_dir, "db")
       private$head_file <- file.path(private$path_dir, "head")
       private$total_file <- file.path(private$path_dir, "total")
       private$lock_file <- file.path(private$path_dir, "lock")
+      private$use_lock_file <- use_lock_file
       private$txtq_exclusive({
         file_create(private$db_file)
         if (!file.exists(private$head_file)) {
@@ -123,8 +129,10 @@ R6_txtq <- R6::R6Class(
       private$txtq_validate()
     },
     txtq_exclusive = function(code) {
-      on.exit(filelock::unlock(lock))
-      lock <- filelock::lock(private$lock_file)
+      if (private$use_lock_file) {
+        on.exit(filelock::unlock(lock))
+        lock <- filelock::lock(private$lock_file)
+      }
       force(code)
     },
     txtq_get_head = function() {
@@ -244,8 +252,8 @@ R6_txtq <- R6::R6Class(
   public = list(
     #' @description Initialize a txtq.
     #' @param path Path to the txtq.
-    initialize = function(path) {
-      private$txtq_establish(path)
+    initialize = function(path, use_lock_file) {
+      private$txtq_establish(path, use_lock_file)
     },
     #' @description Get the txtq path.
     path = function() {
