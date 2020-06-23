@@ -102,3 +102,10 @@ test_that("clean()", {
     expect_equal(q$total(), 3)
   }
 })
+
+test_that("lock file can be disabled", {
+  x <- txtq(tempfile(), use_lock_file = TRUE)
+  expect_true("lock" %in% list.files(x$path()))
+  x <- txtq(tempfile(), use_lock_file = FALSE)
+  expect_false("lock" %in% list.files(x$path()))
+})
