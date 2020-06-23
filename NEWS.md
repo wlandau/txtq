@@ -1,4 +1,4 @@
-# Version 0.2.0.9000
+# Version 0.2.1
 
 - Add R6 docstrings.
 - Add a `use_lock_file` argument to allow users to disable the lock file (#18).
