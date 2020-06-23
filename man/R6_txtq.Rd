@@ -35,13 +35,20 @@ txtq
 \subsection{Method \code{new()}}{
 Initialize a txtq.
 \subsection{Usage}{
-\if{html}{\out{<div class="r">}}\preformatted{R6_txtq$new(path, use_lock_file)}\if{html}{\out{</div>}}
+\if{html}{\out{<div class="r">}}\preformatted{R6_txtq$new(path, use_lock_file = TRUE)}\if{html}{\out{</div>}}
 }
 
 \subsection{Arguments}{
 \if{html}{\out{<div class="arguments">}}
 \describe{
-\item{\code{path}}{Path to the txtq.}
+\item{\code{path}}{Character string giving the file path of the queue.
+The \code{txtq()} function creates a folder at this path to store
+the messages.}
+
+\item{\code{use_lock_file}}{Logical, whether to use a lock file
+for blocking operations. Should only be \code{FALSE} in specialized
+use cases with no parallel computing (for example, when a
+\code{txtq} is used as a database and accessed by only one process.)}
 }
 \if{html}{\out{</div>}}
 }

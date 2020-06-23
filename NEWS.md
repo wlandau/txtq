@@ -1,3 +1,7 @@
+# Version 0.2.3
+
+- Set a default for `use_lock_file` in the constructor.
+
 # Version 0.2.2
 
 - Skip some tests on CRAN to avoid parallel socket brittleness.

@@ -251,8 +251,14 @@ R6_txtq <- R6::R6Class(
   ),
   public = list(
     #' @description Initialize a txtq.
-    #' @param path Path to the txtq.
-    initialize = function(path, use_lock_file) {
+    #' @param path Character string giving the file path of the queue.
+    #'   The `txtq()` function creates a folder at this path to store
+    #'   the messages.
+    #' @param use_lock_file Logical, whether to use a lock file
+    #'   for blocking operations. Should only be `FALSE` in specialized
+    #'   use cases with no parallel computing (for example, when a
+    #'   `txtq` is used as a database and accessed by only one process.)
+    initialize = function(path, use_lock_file = TRUE) {
       private$txtq_establish(path, use_lock_file)
     },
     #' @description Get the txtq path.
