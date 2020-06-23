@@ -1,4 +1,5 @@
 test_that("txtq is thread safe", {
+  skip_on_cran()
   f <- function(process, in_, out_) {
     q <- txtq::txtq(in_)
     if (identical(process, "A")) {
@@ -34,6 +35,7 @@ test_that("txtq is thread safe", {
 
 
 test_that("long message", {
+  skip_on_cran()
   q <- txtq(tempfile())
   s <- paste(sample(LETTERS, 3000000, TRUE), collapse = "")
   q$push(title = "long", message = s)

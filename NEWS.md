@@ -1,3 +1,7 @@
+# Version 0.2.2
+
+- Skip some tests on CRAN to avoid parallel socket brittleness.
+
 # Version 0.2.1
 
 - Add R6 docstrings.
