@@ -21,6 +21,20 @@ See the README at
 \url{https://github.com/wlandau/txtq}
 and the examples in this help file for instructions.
 }
+\section{NFS}{
+
+As an interprocess communication tool,
+\code{txtq} relies on the \href{https://github.com/r-lib/filelock}{\code{filelock}}
+package to prevent race conditions.
+Unfortunately, \code{filelock} cannot prevent race conditions
+on network file systems (NFS), which means neither can \code{txtq}.
+In other words, on certain common kinds of clusters,
+\code{txtq} cannot reliably manage interprocess communication
+for processes on different computers.
+However, it can still serve as a low-tech replacement
+for a simple non-threadsafe database.
+}
+
 \examples{
   path <- tempfile() # Define a path to your queue.
   q <- txtq(path) # Create a new queue or recover an existing one.

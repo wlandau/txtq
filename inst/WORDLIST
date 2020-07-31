@@ -9,13 +9,16 @@ cloneable
 docstrings
 Gábor
 initailizing
+interprocess
 Jeroen
 liteq
 lockfile
 namespaced
+NFS
 Ooms
 POSIXct
 RabbitMQ
 README
+threadsafe
 unpopped
 ZeroMQ

@@ -160,6 +160,10 @@ q_to$list()
 q_to$log()
 ```
 
+# Network file systems
+
+As an interprocess communication tool, `txtq` relies on the [`filelock`](https://github.com/r-lib/filelock) package to prevent race conditions. Unfortunately, `filelock` cannot prevent race conditions on network file systems (NFS), which means neither can `txtq`. In other words, on certain common kinds of clusters, `txtq` cannot reliably manage interprocess communication for processes on different computers. However, it can still serve as a low-tech replacement for a simple non-threadsafe database.
+
 # Similar work
 
 ## liteq

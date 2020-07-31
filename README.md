@@ -17,13 +17,12 @@ together. First, both processes grab the queue.
 ``` r
 path <- tempfile() # Define a path to your queue.
 path # In real life, temp files go away when the session exits, so be careful.
-#> [1] "/tmp/RtmpUI7iip/file207d77e0594b"
+#> [1] "/var/folders/k3/q1f45fsn4_13jbn0742d4zj40000gn/T//RtmpqWUQMe/file230a1994aa0a"
 q <- txtq(path) # Create a new queue or recover an existing one.
 q$validate() # Check if the queue is corrupted.
 ```
 
-The queue uses text files to keep track of your
-data.
+The queue uses text files to keep track of your data.
 
 ``` r
 list.files(q$path()) # The queue's underlying text files live in this folder.
@@ -49,13 +48,13 @@ You can inspect the contents of the queue from either process.
 ``` r
 q$list()
 #>       title    message                                 time
-#> 1     Hello process B. 2020-06-22 20:37:33.556957 -0400 GMT
-#> 2 Calculate    sqrt(4) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 3 Calculate   sqrt(16) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 4 Send back   the sum. 2020-06-22 20:37:33.559714 -0400 GMT
+#> 1     Hello process B. 2020-07-31 14:02:19.500751 -0400 GMT
+#> 2 Calculate    sqrt(4) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 3 Calculate   sqrt(16) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 4 Send back   the sum. 2020-07-31 14:02:19.516208 -0400 GMT
 q$list(1) # You can specify the number of messages to list.
 #>   title    message                                 time
-#> 1 Hello process B. 2020-06-22 20:37:33.556957 -0400 GMT
+#> 1 Hello process B. 2020-07-31 14:02:19.500751 -0400 GMT
 q$count()
 #> [1] 4
 ```
@@ -65,8 +64,8 @@ As Process A is pushing the messages, Process B can consume them.
 ``` r
 q$pop(2) # If you pass 2, you are assuming the queue has >=2 messages.
 #>       title    message                                 time
-#> 1     Hello process B. 2020-06-22 20:37:33.556957 -0400 GMT
-#> 2 Calculate    sqrt(4) 2020-06-22 20:37:33.558541 -0400 GMT
+#> 1     Hello process B. 2020-07-31 14:02:19.500751 -0400 GMT
+#> 2 Calculate    sqrt(4) 2020-07-31 14:02:19.514137 -0400 GMT
 ```
 
 Those popped messages are not technically in the queue any longer.
@@ -74,8 +73,8 @@ Those popped messages are not technically in the queue any longer.
 ``` r
 q$list()
 #>       title  message                                 time
-#> 1 Calculate sqrt(16) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 2 Send back the sum. 2020-06-22 20:37:33.559714 -0400 GMT
+#> 1 Calculate sqrt(16) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 2 Send back the sum. 2020-07-31 14:02:19.516208 -0400 GMT
 q$count() # Number of messages technically in the queue.
 #> [1] 2
 ```
@@ -85,10 +84,10 @@ But we still have a full log of all the messages that were ever sent.
 ``` r
 q$log()
 #>       title    message                                 time
-#> 1     Hello process B. 2020-06-22 20:37:33.556957 -0400 GMT
-#> 2 Calculate    sqrt(4) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 3 Calculate   sqrt(16) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 4 Send back   the sum. 2020-06-22 20:37:33.559714 -0400 GMT
+#> 1     Hello process B. 2020-07-31 14:02:19.500751 -0400 GMT
+#> 2 Calculate    sqrt(4) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 3 Calculate   sqrt(16) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 4 Send back   the sum. 2020-07-31 14:02:19.516208 -0400 GMT
 q$total() # Number of messages that were ever queued.
 #> [1] 4
 ```
@@ -98,10 +97,10 @@ Let’s let Process B get the rest of the instructions.
 ``` r
 q$pop() # q$pop() with no arguments just pops one message.
 #>       title  message                                 time
-#> 1 Calculate sqrt(16) 2020-06-22 20:37:33.558541 -0400 GMT
+#> 1 Calculate sqrt(16) 2020-07-31 14:02:19.514137 -0400 GMT
 q$pop() # Call q$pop(-1) to pop all the messages at once.
 #>       title  message                                 time
-#> 1 Send back the sum. 2020-06-22 20:37:33.559714 -0400 GMT
+#> 1 Send back the sum. 2020-07-31 14:02:19.516208 -0400 GMT
 ```
 
 Now let’s say Process B follows the instructions in the messages. The
@@ -116,7 +115,7 @@ Process A can now see the results.
 ``` r
 q$pop()
 #>     title message                                 time
-#> 1 Results       6 2020-06-22 20:37:33.618624 -0400 GMT
+#> 1 Results       6 2020-07-31 14:02:19.576190 -0400 GMT
 ```
 
 The queue can grow large if you are not careful. Popped messages are
@@ -130,15 +129,15 @@ q$total()
 #> [1] 6
 q$list()
 #>   title message                                 time
-#> 1   not  popped 2020-06-22 20:37:33.635787 -0400 GMT
+#> 1   not  popped 2020-07-31 14:02:19.592135 -0400 GMT
 q$log()
 #>       title    message                                 time
-#> 1     Hello process B. 2020-06-22 20:37:33.556957 -0400 GMT
-#> 2 Calculate    sqrt(4) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 3 Calculate   sqrt(16) 2020-06-22 20:37:33.558541 -0400 GMT
-#> 4 Send back   the sum. 2020-06-22 20:37:33.559714 -0400 GMT
-#> 5   Results          6 2020-06-22 20:37:33.618624 -0400 GMT
-#> 6       not     popped 2020-06-22 20:37:33.635787 -0400 GMT
+#> 1     Hello process B. 2020-07-31 14:02:19.500751 -0400 GMT
+#> 2 Calculate    sqrt(4) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 3 Calculate   sqrt(16) 2020-07-31 14:02:19.514137 -0400 GMT
+#> 4 Send back   the sum. 2020-07-31 14:02:19.516208 -0400 GMT
+#> 5   Results          6 2020-07-31 14:02:19.576190 -0400 GMT
+#> 6       not     popped 2020-07-31 14:02:19.592135 -0400 GMT
 ```
 
 To keep the database file from getting too big, you can clean out the
@@ -152,10 +151,10 @@ q$total()
 #> [1] 1
 q$list()
 #>   title message                                 time
-#> 1   not  popped 2020-06-22 20:37:33.652802 -0400 GMT
+#> 1   not  popped 2020-07-31 14:02:19.612715 -0400 GMT
 q$log()
 #>   title message                                 time
-#> 1   not  popped 2020-06-22 20:37:33.652802 -0400 GMT
+#> 1   not  popped 2020-07-31 14:02:19.612715 -0400 GMT
 ```
 
 You can also reset the queue to remove all messages, popped or not.
@@ -202,26 +201,37 @@ q_to$push(title = "to", message = "unpopped")
 
 q_from$pop()
 #>   title message                                 time
-#> 1  from  popped 2020-06-22 20:37:33.705359 -0400 GMT
+#> 1  from  popped 2020-07-31 14:02:19.663487 -0400 GMT
 
 q_to$pop()
 #>   title message                                 time
-#> 1    to  popped 2020-06-22 20:37:33.708038 -0400 GMT
+#> 1    to  popped 2020-07-31 14:02:19.667361 -0400 GMT
 
 q_to$import(q_from)
 
 q_to$list()
 #>   title  message                                 time
-#> 1  from unpopped 2020-06-22 20:37:33.719725 -0400 GMT
-#> 2    to unpopped 2020-06-22 20:37:33.719725 -0400 GMT
+#> 1  from unpopped 2020-07-31 14:02:19.685340 -0400 GMT
+#> 2    to unpopped 2020-07-31 14:02:19.685340 -0400 GMT
 
 q_to$log()
 #>   title  message                                 time
-#> 1  from   popped 2020-06-22 20:37:33.719725 -0400 GMT
-#> 2    to   popped 2020-06-22 20:37:33.719725 -0400 GMT
-#> 3  from unpopped 2020-06-22 20:37:33.719725 -0400 GMT
-#> 4    to unpopped 2020-06-22 20:37:33.719725 -0400 GMT
+#> 1  from   popped 2020-07-31 14:02:19.685340 -0400 GMT
+#> 2    to   popped 2020-07-31 14:02:19.685340 -0400 GMT
+#> 3  from unpopped 2020-07-31 14:02:19.685340 -0400 GMT
+#> 4    to unpopped 2020-07-31 14:02:19.685340 -0400 GMT
 ```
+
+# Network file systems
+
+As an interprocess communication tool, `txtq` relies on the
+[`filelock`](https://github.com/r-lib/filelock) package to prevent race
+conditions. Unfortunately, `filelock` cannot prevent race conditions on
+network file systems (NFS), which means neither can `txtq`. In other
+words, on certain common kinds of clusters, `txtq` cannot reliably
+manage interprocess communication for processes on different computers.
+However, it can still serve as a low-tech replacement for a simple
+non-threadsafe database.
 
 # Similar work
 
