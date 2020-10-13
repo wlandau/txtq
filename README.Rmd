@@ -19,7 +19,7 @@ options(tibble.print_min = 5, tibble.print_max = 5)
 suppressMessages(suppressWarnings(library(txtq)))
 ```
 
-[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![Travis build status](https://travis-ci.org/wlandau/txtq.svg?branch=master)](https://travis-ci.org/wlandau/txtq) [![AppVeyor build status](https://ci.appveyor.com/api/projects/status/github/wlandau/txtq?branch=master&svg=true)](https://ci.appveyor.com/project/wlandau/txtq) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=master)](https://codecov.io/github/wlandau/txtq?branch=master)
+[![CRAN](https://www.r-pkg.org/badges/version/txtq)](https://cran.r-project.org/package=txtq) [![check](https://github.com/wlandau/txtq/workflows/check/badge.svg)](https://github.com/wlandau/txtq/actions?query=workflow%3Acheck) [![Codecov](https://codecov.io/github/wlandau/txtq/coverage.svg?branch=main)](https://codecov.io/github/wlandau/txtq?branch=main)
 
 # txtq - a small message queue for parallel processes
 

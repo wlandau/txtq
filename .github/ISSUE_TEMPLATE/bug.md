@@ -9,9 +9,9 @@ assignees: wlandau
 
 ## Prework
 
-- [ ] Read and abide by `txtq`'s [code of conduct](https://github.com/wlandau/txtq/blob/master/CODE_OF_CONDUCT.md).
+- [ ] Read and abide by `txtq`'s [code of conduct](https://github.com/wlandau/txtq/blob/main/CODE_OF_CONDUCT.md).
 - [ ] Search for duplicates among the [existing issues](https://github.com/wlandau/txtq/issues), both open and closed.
-- [ ] Advanced users: verify that the bug still persists in the current development version (i.e. `remotes::install_github("wlandau/txtq")`) and mention the [SHA-1 hash](https://git-scm.com/book/en/v1/Getting-Started-Git-Basics#Git-Has-Integrity) of the [Git commit you install](https://github.com/wlandau/txtq/commits/master).
+- [ ] Advanced users: verify that the bug still persists in the current development version (i.e. `remotes::install_github("wlandau/txtq")`) and mention the [SHA-1 hash](https://git-scm.com/book/en/v1/Getting-Started-Git-Basics#Git-Has-Integrity) of the [Git commit you install](https://github.com/wlandau/txtq/commits/main).
 
 ## Description
 
