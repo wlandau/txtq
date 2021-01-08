@@ -172,7 +172,7 @@ As an interprocess communication tool, `txtq` relies on the [`filelock`](https:/
 
 ## Other message queues
 
-There is a plethora of message queues beyond R, most notably [ZeroMQ](http://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](http://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](http://zeromq.org) from R. Even in this landscape, `txtq` has advantages.
+There is a plethora of message queues beyond R, most notably [ZeroMQ](https://zeromq.org) and [RabbitMQ](https://www.rabbitmq.com/). In fact, [Jeroen Ooms](https://github.com/jeroen) and [Whit Armstrong](https://github.com/armstrtw) maintain [`rzmq`](https://github.com/ropensci/rzmq), a package to work with [ZeroMQ](https://zeromq.org) from R. Even in this landscape, `txtq` has advantages.
 
 1. The `txtq` user interface is friendly, and its internals are simple. No prior knowledge of sockets or message-passing is required.
 2. `txtq` is lightweight, R-focused, and easy to install. It only depends on R and a few packages on [CRAN](https://cran.r-project.org).
