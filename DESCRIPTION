@@ -9,7 +9,7 @@ Description: This queue is a data structure that lets
   log of all the messages ever pushed. File locking
   preserves the integrity of the data even when
   multiple processes access the queue simultaneously.
-Version: 0.2.3.9000
+Version: 0.2.4
 License: MIT + file LICENSE
 URL: https://github.com/wlandau/txtq
 BugReports: https://github.com/wlandau/txtq/issues
@@ -41,5 +41,5 @@ Suggests:
   testthat (>= 2.1.0)
 Encoding: UTF-8
 Language: en-US
-RoxygenNote: 7.1.1.9000
+RoxygenNote: 7.1.1
 Roxygen: list(markdown = TRUE)

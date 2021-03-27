@@ -1,4 +1,4 @@
-# Version 0.2.3.9000
+# Version 0.2.4
 
 * Document NFS limitation (#19, @r2evans).
 * Move CI to GitHub Actions.
