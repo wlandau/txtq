@@ -2,6 +2,7 @@
 
 * Document NFS limitation (#19, @r2evans).
 * Move CI to GitHub Actions.
+* Change `open` argument of `file()` to `"r+"` (#20).
 
 # Version 0.2.3
 

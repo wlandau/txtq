@@ -161,7 +161,7 @@ R6_txtq <- R6::R6Class(
     # Faster than txtq_get_total and txtq_set_total
     # because it uses fewer connections:
     txtq_inc_total = function(n) {
-      con <- file(private$total_file, "r+w")
+      con <- file(private$total_file, "r+")
       on.exit(close(con))
       old <- scan(con, quiet = TRUE, what = integer())
       out <- old + as.integer(n)
